@@ -1,6 +1,7 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
+import NotFound from "./pages/NotFound";
 import { GuestRoute, ProtectedRoute } from "./routes/AuthGuards";
 
 function App() {
@@ -13,6 +14,7 @@ function App() {
         <Route element={<GuestRoute />}>
           <Route path="/login" element={<Login />} />
         </Route>
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </BrowserRouter>
   );
