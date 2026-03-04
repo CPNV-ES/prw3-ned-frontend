@@ -1,81 +1,95 @@
-# PRW3-NED_Frontend
+# PRW3-NED Frontend
 
 ## Description
 
-Ce projet est le frontend du web app qui est a développer pour le module PRW3
+This project is the frontend of the web app to be developed for the PRW3 module.
 
-Il est destiné a réaliser le job du frontend de l'application.
-Il sera possible de :
+It is intended to handle the frontend responsibilities of the application.
+Users will be able to:
 
-- Parcourir des projets via des tags
-- Voir rapidement les infomrations majeurs d'un projet
-- Ouvrir une page qui montra plus en détail le projet selectionné
-- Publier/Modifier sa propre page
-- Liker/Commenter sur d'autres projets
-- Explorer directement les projets d'une même auteur
+- Browse projects via tags
+- Quickly view major information about a project
+- Open a detailed page showing the selected project
+- Publish/modify their own page
+- Like/comment on other projects
+- Explore projects from the same author
 
-## Pour commencer
+## Getting Started
 
-### Pré-requis
+### Prerequisites
 
 Node.js 22.18.0
-Npm 10.9.3
+npm 10.9.3
 
-## Déploiement
+## Deployment
 
-### Sur l'environnement dev
+### On dev environment
 
-Pour installer les dépendences :
+To install dependencies:
 
 ```shell
 npm install
 ```
 
-Pour build :
+To build:
 
 ```shell
 npm run build
 ```
 
-Pour lancer le serveur
+to run the mocked backend:
+
+```shell
+npm run fake-server
+```
+
+To start the development server:
 
 ```shell
 npm run dev
 ```
 
-Pour lancer les tests
+Keep the code linted and formatted:
 
 ```shell
-node --test
+# to lint the code
+npm run lint
+
+# to format the code
+npm run format
+
+# to check if the code is well formatted without modifying it
+npm run check:format
 ```
 
 ### On integration environment
 
-Pas encore
+Not yet implemented
 
-## Directory structure
+## Directory Structure
 
 ```shell
 ├───public
 └───src
-    ├───assets
-    ├───componants
-    └───pages
+  ├───assets
+  ├───components
+  └───pages
 ```
 
-## Collaborate
+## Collaboration
 
-Ce projet utilise Git. Les branches utilisés sont les suivantes: main, develop, feature, release, hotfix. Les noms des branches suivent ce pattern: type/shortDescription eg.(feature/awesomeFeature).
+This project uses Git. The branches used are: main, develop, feature, release, and hotfix. Branch names follow this pattern: type/shortDescription, e.g., feature/awesomeFeature.
 
-- Il faut savoir :
-  - Comment proposer une nouvelle feature (issue, pull request)
-  - [Comment commit](https://www.conventionalcommits.org/en/v1.0.0/)
-  - [Comment utiliser votre flux de travail](https://nvie.com/posts/a-successful-git-branching-model/)
+You should know:
+
+- How to propose a new feature (issue, pull request)
+- [How to commit](https://www.conventionalcommits.org/en/v1.0.0/)
+- [How to use your workflow](https://nvie.com/posts/a-successful-git-branching-model/)
 
 ## Contact
 
-| Développeur               | Email                         |
-| ------------------------- | ----------------------------- |
-| Ethann Schneider          | <ethann.schneider@eduvaud.ch> |
-| Nathan Chauveau           | <nathan.chauveau@eduvaud.ch>  |
-| Diogo Da-Seilva-Fernandes | <diogo.dasilva2@eduvaud.ch>   |
+| Developer                | Email                         |
+| ------------------------ | ----------------------------- |
+| Ethann Schneider         | <ethann.schneider@eduvaud.ch> |
+| Nathan Chauveau          | <nathan.chauveau@eduvaud.ch>  |
+| Diogo Da-Silva-Fernandes | <diogo.dasilva2@eduvaud.ch>   |
