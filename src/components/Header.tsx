@@ -2,11 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { User } from "../models/user";
 
-type HeaderProps = {
-  title?: string;
-};
-
-export default function Header({ title = "Dashboard" }: HeaderProps) {
+export default function Header() {
   const navigate = useNavigate();
   const [isLoggingOut, setIsLoggingOut] = useState(false);
 
@@ -24,7 +20,7 @@ export default function Header({ title = "Dashboard" }: HeaderProps) {
   return (
     <header className="w-full border-b border-gray-200 bg-white">
       <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-3">
-        <h1 className="text-lg font-bold text-gray-900">{title}</h1>
+        <h1 className="text-lg font-bold text-gray-900">Projet Demo Deck</h1>
         <button
           type="button"
           onClick={handleLogout}

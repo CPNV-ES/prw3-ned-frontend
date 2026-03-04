@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Navigate, Outlet, useLocation } from "react-router-dom";
 import { User } from "../models/user";
+import Header from "../components/Header";
 
 type AuthStatus = "loading" | "authenticated" | "unauthenticated";
 
@@ -35,7 +36,7 @@ export function ProtectedRoute() {
     return null;
   }
 
-  return authStatus === "authenticated" ? <Outlet /> : <Navigate to="/login" replace />;
+  return authStatus === "authenticated" ? <><Header/><Outlet /></> : <Navigate to="/login" replace />;
 }
 
 export function GuestRoute() {
