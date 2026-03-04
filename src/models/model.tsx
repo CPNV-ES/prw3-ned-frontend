@@ -6,7 +6,7 @@ export class Model {
   ): Promise<Response> {
     const headers: Record<string, string> = {
       "Content-Type": "application/json",
-    }
+    };
     if (localStorage.getItem("token")) {
       headers["Authorization"] = `${localStorage.getItem("token")}`;
     }

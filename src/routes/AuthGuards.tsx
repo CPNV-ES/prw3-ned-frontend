@@ -36,7 +36,14 @@ export function ProtectedRoute() {
     return null;
   }
 
-  return authStatus === "authenticated" ? <><Header/><Outlet /></> : <Navigate to="/login" replace />;
+  return authStatus === "authenticated" ? (
+    <>
+      <Header />
+      <Outlet />
+    </>
+  ) : (
+    <Navigate to="/login" replace />
+  );
 }
 
 export function GuestRoute() {
@@ -46,5 +53,9 @@ export function GuestRoute() {
     return null;
   }
 
-  return authStatus === "authenticated" ? <Navigate to="/" replace /> : <Outlet />;
+  return authStatus === "authenticated" ? (
+    <Navigate to="/" replace />
+  ) : (
+    <Outlet />
+  );
 }
