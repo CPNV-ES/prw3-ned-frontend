@@ -1,73 +1,81 @@
-# React + TypeScript + Vite
+# PRW3-NED_Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Description
 
-Currently, two official plugins are available:
+Ce projet est le frontend du web app qui est a développer pour le module PRW3
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Il est destiné a réaliser le job du frontend de l'application.
+Il sera possible de :
 
-## React Compiler
+- Parcourir des projets via des tags
+- Voir rapidement les infomrations majeurs d'un projet
+- Ouvrir une page qui montra plus en détail le projet selectionné
+- Publier/Modifier sa propre page
+- Liker/Commenter sur d'autres projets
+- Explorer directement les projets d'une même auteur
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Pour commencer
 
-## Expanding the ESLint configuration
+### Pré-requis
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+Node.js 22.18.0
+Npm 10.9.3
 
-```js
-export default defineConfig([
-  globalIgnores(["dist"]),
-  {
-    files: ["**/*.{ts,tsx}"],
-    extends: [
-      // Other configs...
+## Déploiement
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+### Sur l'environnement dev
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ["./tsconfig.node.json", "./tsconfig.app.json"],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-]);
+Pour installer les dépendences :
+
+```shell
+npm install
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+Pour build :
 
-```js
-// eslint.config.js
-import reactX from "eslint-plugin-react-x";
-import reactDom from "eslint-plugin-react-dom";
-
-export default defineConfig([
-  globalIgnores(["dist"]),
-  {
-    files: ["**/*.{ts,tsx}"],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs["recommended-typescript"],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ["./tsconfig.node.json", "./tsconfig.app.json"],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-]);
+```shell
+npm run build
 ```
+
+Pour lancer le serveur
+
+```shell
+npm run dev
+```
+
+Pour lancer les tests
+
+```shell
+node --test
+```
+
+### On integration environment
+
+Pas encore
+
+## Directory structure
+
+```shell
+├───public
+└───src
+    ├───assets
+    ├───componants
+    └───pages
+```
+
+## Collaborate
+
+Ce projet utilise Git. Les branches utilisés sont les suivantes: main, develop, feature, release, hotfix. Les noms des branches suivent ce pattern: type/shortDescription eg.(feature/awesomeFeature).
+
+- Il faut savoir :
+  - Comment proposer une nouvelle feature (issue, pull request)
+  - [Comment commit](https://www.conventionalcommits.org/en/v1.0.0/)
+  - [Comment utiliser votre flux de travail](https://nvie.com/posts/a-successful-git-branching-model/)
+
+## Contact
+
+| Développeur               | Email                         |
+| ------------------------- | ----------------------------- |
+| Ethann Schneider          | <ethann.schneider@eduvaud.ch> |
+| Nathan Chauveau           | <nathan.chauveau@eduvaud.ch>  |
+| Diogo Da-Seilva-Fernandes | <diogo.dasilva2@eduvaud.ch>   |
