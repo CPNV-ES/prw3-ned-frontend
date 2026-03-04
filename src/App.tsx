@@ -1,15 +1,20 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Home from "./pages/Home";
-import Projects from "./pages/Projects";
-import Users from "./pages/Users";
+import Login from "./pages/Login";
+import NotFound from "./pages/NotFound";
+import { GuestRoute, ProtectedRoute } from "./routes/AuthGuards";
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/projects" element={<Projects />} />
-        <Route path="/users" element={<Users />} />
+        <Route element={<ProtectedRoute />}>
+          <Route path="/" element={<Home />} />
+        </Route>
+        <Route element={<GuestRoute />}>
+          <Route path="/login" element={<Login />} />
+        </Route>
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </BrowserRouter>
   );
