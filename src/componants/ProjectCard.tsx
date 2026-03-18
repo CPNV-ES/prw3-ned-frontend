@@ -1,5 +1,7 @@
-export default function ProjectCard(Project project) {
+import type { Project } from "../models/project";
+
+export default function ProjectCard(project: Project) {
     return (
-    
+    <></>
     )
 }
