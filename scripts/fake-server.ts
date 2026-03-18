@@ -13,7 +13,12 @@ const users = [
   { id: 1, name: "John Doe", username: "johndoe" },
   { id: 2, name: "Jane Smith", username: "janesmith" },
 ];
+const projects = [
+ { id:1, title: "Project 1", summary: "yippie", urlDemo: "link", urlRep: "link", image: "default.png", authorId:1, like: 0, tags: ["yup", "yes"] },
+ { id:2, title: "Project 2", summary: "yippeie", urlDemo: "link", urlRep: "link", image: "default.png", authorId:2, like: 1110, tags: ["yeeup"] }
+];
 
+//--- login ---
 app.get("/api/sessions", (req: Request, res: Response) => {
   const token = req.headers.authorization?.split(" ")[1];
   if (token === "fake-token-123") {
@@ -40,6 +45,13 @@ app.post("/api/sessions", (req: Request, res: Response) => {
 app.delete("/api/sessions", (req: Request, res: Response) => {
   res.json({ message: "Logged out successfully" });
 });
+
+//--- Projects ---
+
+// 6 apps to do
+
+
+//--- Others ---
 
 app.get("/api/health", (req: Request, res: Response) => {
   res.json({ status: "ok" });
