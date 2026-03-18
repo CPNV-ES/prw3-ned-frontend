@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { Project } from "../../models/project";
 
-export default function ProjectForm() {
+export default function ProjectForm() { //optionnal project, if project not null -> update else -> create
     const navigate = useNavigate();
     const [title, setTitle] = useState("");
     const [author, setAuthor] = useState("");
@@ -20,8 +21,8 @@ export default function ProjectForm() {
         setIsSubmitting(true);
         setError("");
         try {
-            await User.login(username, password);
-            navigate("/", { replace: true });
+            await Project.create(title, summary, urlDemo, urlRep, image, author, 0, tags );
+            navigate("/api/projects", { replace: true });
         } catch {
             setError("Invalid username or password");
         } finally {
@@ -76,7 +77,7 @@ export default function ProjectForm() {
                     id="author"
                     type="text"
                     value={author}
-                    onChange={(e) => setAuthor(e.target.value)}
+                    onChange={(e) => setAuthor(e.target.value)} //set the value of this to the id of the user
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                     required
                 />
