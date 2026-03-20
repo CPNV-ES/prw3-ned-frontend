@@ -33,6 +33,23 @@ type LikeRequestBody = {
   userId?: number;
 };
 
+function getAuthenticatedUser(req: Request) {
+  const token = req.headers.authorization?.split(" ")[1];
+  if (token === "fake-token-123") {
+    return users[0];
+  }
+
+  return null;
+}
+
+function enrichProject(project: (typeof projects)[number]) {
+  const author = users.find((user) => user.id === project.authorId);
+  return {
+    ...project,
+    authorUsername: author?.username ?? "unknown",
+  };
+}
+
 //--- login ---
 app.get("/api/sessions", (req: Request, res: Response) => {
   const token = req.headers.authorization?.split(" ")[1];
@@ -64,14 +81,14 @@ app.delete("/api/sessions", (req: Request, res: Response) => {
 //--- Projects ---
 
 app.get("/api/projects", (req: Request, res: Response) => {
-  res.json(projects);
+  res.json(projects.map(enrichProject));
 }); 
 
 app.get("/api/projects/:id", (req: Request, res: Response) => {
   const id = Number(req.params.id);
   const project = projects.find(p => p.id === id);
   if (!project) return res.status(404).json({ error: "Not found" });
-  res.json(project);
+  res.json(enrichProject(project));
 });
 
 app.post("/api/projects", (req: Request, res: Response) => {
@@ -104,25 +121,49 @@ app.post("/api/projects", (req: Request, res: Response) => {
     likedBy: [] as number[],
   };
   projects.push(newProject);
-  res.status(201).json(newProject);
+  res.status(201).json(enrichProject(newProject));
 });
 
 app.delete("/api/projects/:id", (req: Request, res: Response) => {
+  const currentUser = getAuthenticatedUser(req);
   const id = Number(req.params.id);
+  const project = projects.find((p) => p.id === id);
+
+  if (!currentUser) {
+    return res.status(401).json({ error: "Unauthorized" });
+  }
+
+  if (!project) {
+    return res.status(404).json({ error: "Not found" });
+  }
+
+  if (project.authorId !== currentUser.id) {
+    return res.status(403).json({ error: "Forbidden" });
+  }
+
   projects = projects.filter(p => p.id !== id);
   res.json({ message: "Deleted" });
 });
 
 app.patch("/api/projects/:id", (req: Request, res: Response) => {
+  const currentUser = getAuthenticatedUser(req);
   const id = Number(req.params.id);
   const index = projects.findIndex(p => p.id === id);
+
+  if (!currentUser) {
+    return res.status(401).json({ error: "Unauthorized" });
+  }
 
   if (index === -1) {
     return res.status(404).json({ error: "Not found" });
   }
 
+  if (projects[index].authorId !== currentUser.id) {
+    return res.status(403).json({ error: "Forbidden" });
+  }
+
   projects[index] = { ...projects[index], ...req.body };
-  res.json(projects[index]);
+  res.json(enrichProject(projects[index]));
 });
 
 app.post("/api/projects/:id/like", (req: Request, res: Response) => {
@@ -138,12 +179,15 @@ app.post("/api/projects/:id/like", (req: Request, res: Response) => {
     return res.status(400).json({ error: "Invalid user id" });
   }
 
-  if (!project.likedBy.includes(userId)) {
+  if (project.likedBy.includes(userId)) {
+    project.likedBy = project.likedBy.filter((id) => id !== userId);
+    project.like = Math.max(0, project.like - 1);
+  } else {
     project.likedBy.push(userId);
     project.like += 1;
   }
 
-  res.json(project);
+  res.json(enrichProject(project));
 });
 
 //--- Others ---

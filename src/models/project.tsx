@@ -17,6 +17,8 @@ export type ProjectPayload = {
 
 export class Project extends Model {
   id!: number;
+  authorUsername?: string;
+  likedBy?: number[];
   title!: string;
   summary!: string;
   urlDemo!: string;

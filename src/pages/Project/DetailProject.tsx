@@ -62,6 +62,10 @@ export default function DetailProject() {
     return <div className="p-6">Projet introuvable</div>;
   }
 
+  const isAuthor = currentUser?.id === project.authorId;
+  const hasLiked =
+    currentUser !== null && project.likedBy?.includes(currentUser.id) === true;
+
   return (
     <div className="p-6 max-w-3xl mx-auto">
       <button
@@ -83,6 +87,10 @@ export default function DetailProject() {
         <p className="text-gray-700 mb-4">{project.summary}</p>
 
         <div className="mb-4">
+          <strong>Auteur :</strong> {project.authorUsername ?? `#${project.authorId}`}
+        </div>
+
+        <div className="mb-4">
           <strong>Tags :</strong> {project.tags.join(", ")}
         </div>
 
@@ -99,7 +107,7 @@ export default function DetailProject() {
             disabled={isLiking || currentUser === null}
             className="bg-blue-500 text-white px-4 py-2 rounded-xl hover:bg-blue-600 disabled:bg-gray-400"
           >
-            {isLiking ? "Like..." : "Liker le projet"}
+            {isLiking ? "Mise a jour..." : hasLiked ? "Retirer le like" : "Liker le projet"}
           </button>
 
           <a
@@ -120,13 +128,15 @@ export default function DetailProject() {
             Voir le dépôt
           </a>
 
-          <button
-            type="button"
-            onClick={() => navigate(`/projects/edit/${project.id}`)}
-            className="bg-yellow-500 text-white px-4 py-2 rounded-xl hover:bg-yellow-600"
-          >
-            Modifier
-          </button>
+          {isAuthor ? (
+            <button
+              type="button"
+              onClick={() => navigate(`/projects/edit/${project.id}`)}
+              className="bg-yellow-500 text-white px-4 py-2 rounded-xl hover:bg-yellow-600"
+            >
+              Modifier
+            </button>
+          ) : null}
         </div>
       </div>
     </div>

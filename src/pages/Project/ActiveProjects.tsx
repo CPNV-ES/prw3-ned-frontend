@@ -2,22 +2,28 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { Project } from "../../models/project";
+import { User } from "../../models/user";
 
 export default function ActiveProjects() {
     const [projects, setProjects] = useState<Project[]>([]);
+    const [currentUser, setCurrentUser] = useState<User | null>(null);
     const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
 
     useEffect(() => {
         async function fetchProjects() {
             try {
-                const allProjects = await Project.getAll();
+                const [allProjects, user] = await Promise.all([
+                    Project.getAll(),
+                    User.current(),
+                ]);
 
                 const activeProjects = allProjects.filter(
                     (project) => project.isActive === true
                 );
 
                 setProjects(activeProjects);
+                setCurrentUser(user);
             } catch (error) {
                 console.error("Erreur lors du chargement des projets :", error);
             } finally {
@@ -69,7 +75,10 @@ export default function ActiveProjects() {
                 <p>Aucun projet actif trouvé.</p>
             ) : (
                 <div className="grid gap-4">
-                    {projects.map((project) => (
+                    {projects.map((project) => {
+                        const isAuthor = currentUser?.id === project.authorId;
+
+                        return (
                         <div
                             key={project.id}
                             className="p-4 border rounded-2xl shadow-sm hover:shadow-md transition"
@@ -87,22 +96,27 @@ export default function ActiveProjects() {
                                     Voir
                                 </button>
 
-                                <button
-                                    onClick={() => handleEdit(project.id)}
-                                    className="bg-yellow-500 text-white px-3 py-1 rounded-lg hover:bg-yellow-600"
-                                >
-                                    Modifier
-                                </button>
+                                {isAuthor ? (
+                                    <button
+                                        onClick={() => handleEdit(project.id)}
+                                        className="bg-yellow-500 text-white px-3 py-1 rounded-lg hover:bg-yellow-600"
+                                    >
+                                        Modifier
+                                    </button>
+                                ) : null}
 
-                                <button
-                                    onClick={() => handleDelete(project.id)}
-                                    className="bg-red-500 text-white px-3 py-1 rounded-lg hover:bg-red-600"
-                                >
-                                    Supprimer
-                                </button>
+                                {isAuthor ? (
+                                    <button
+                                        onClick={() => handleDelete(project.id)}
+                                        className="bg-red-500 text-white px-3 py-1 rounded-lg hover:bg-red-600"
+                                    >
+                                        Supprimer
+                                    </button>
+                                ) : null}
                             </div>
                         </div>
-                    ))}
+                        );
+                    })}
                 </div>
             )}
         </div>

@@ -19,12 +19,15 @@ export default function ProjectForm() {
     const [error, setError] = useState("");
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isLoading, setIsLoading] = useState(isEditMode);
+    const [isAuthorized, setIsAuthorized] = useState(!isEditMode);
 
     useEffect(() => {
         let isCancelled = false;
 
         async function loadForm(): Promise<void> {
             try {
+                const currentUser = await User.current();
+
                 if (isEditMode && projectId !== null) {
                     const project = await Project.getCurrent(projectId);
 
@@ -36,7 +39,17 @@ export default function ProjectForm() {
                         return;
                     }
 
+                    if (!currentUser || currentUser.id !== project.authorId) {
+                        if (!isCancelled) {
+                            setError("Seul l'auteur peut modifier ce projet.");
+                            setIsAuthorized(false);
+                            setIsLoading(false);
+                        }
+                        return;
+                    }
+
                     if (!isCancelled) {
+                        setIsAuthorized(true);
                         setTitle(project.title);
                         setAuthorId(String(project.authorId));
                         setUrlDemo(project.urlDemo);
@@ -49,9 +62,9 @@ export default function ProjectForm() {
                     return;
                 }
 
-                const currentUser = await User.current();
                 if (!isCancelled && currentUser) {
                     setAuthorId(String(currentUser.id));
+                    setIsAuthorized(true);
                 }
             } catch (loadError) {
                 if (!isCancelled) {
@@ -78,6 +91,10 @@ export default function ProjectForm() {
         setIsSubmitting(true);
         setError("");
         try {
+            if (!isAuthorized) {
+                throw new Error("Unauthorized project edit");
+            }
+
             const payload = {
                 title,
                 summary,
@@ -113,8 +130,20 @@ export default function ProjectForm() {
         return <div className="p-6">Chargement du formulaire...</div>;
     }
 
+    if (!isAuthorized) {
+        return <div className="p-6 text-red-600">{error}</div>;
+    }
+
     return (
         <div className="mx-auto max-w-3xl p-6">
+            <button
+                onClick={() => navigate(-1)}
+                className="mb-4 text-blue-500 hover:underline"
+            >
+                ← Retour
+            </button>
+
+
             <h1 className="mb-6 text-2xl font-bold">
                 {isEditMode ? "Modifier le projet" : "Créer un projet"}
             </h1>
