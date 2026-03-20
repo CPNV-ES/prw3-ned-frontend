@@ -63,16 +63,31 @@ export class Project extends Model {
   }
 
   static async update(projectId: number, project: Partial<Project>): Promise<void> {
-    await this.send_request("PATCH", `${API_URL}/${projectId}`, project);
+    const response = await this.send_request("PATCH", `${API_URL}/${projectId}`, project);
+
+    if (!response.ok) {
+      throw new Error("Project update failed");
+    }
   }
 
   static async delete(projectId: number): Promise<void> {
-    await this.send_request("DELETE", `${API_URL}/${projectId}`);
+    const response = await this.send_request("DELETE", `${API_URL}/${projectId}`);
+
+    if (!response.ok) {
+      throw new Error("Project deletion failed");
+    }
   }
 
-  static async liked(projectId: number, user: User): Promise<void> {
-    await this.send_request("POST", `${API_URL}/${projectId}/like`, {
+  static async liked(projectId: number, user: User): Promise<Project> {
+    const response = await this.send_request("POST", `${API_URL}/${projectId}/like`, {
       userId: user.id,
     });
+
+    if (!response.ok) {
+      throw new Error("Project like failed");
+    }
+
+    const data = await response.json();
+    return new Project(data);
   }
 }

@@ -14,9 +14,9 @@ const users = [
   { id: 2, name: "Jane Smith", username: "janesmith" },
 ];
 let projects = [
-  { id:1, title: "Project 1", summary: "yippie", urlDemo: "link", urlRep: "link", image: "default.png", authorId:1, like: 0, tags: ["yup", "yes"], isActive: true },
-  { id:2, title: "Project 2", summary: "yippeie", urlDemo: "link", urlRep: "link", image: "default.png", authorId:2, like: 1110, tags: ["yeeup"], isActive: false },
-  { id:3, title: "Project 3", summary: "whoops", urlDemo: "link", urlRep: "link", image: "default.png", authorId:2, like: 5, tags: ["yup", "yipie"], isActive: true }
+  { id:1, title: "Project 1", summary: "yippie", urlDemo: "link", urlRep: "link", image: "default.png", authorId:1, like: 0, tags: ["yup", "yes"], isActive: true, likedBy: [] as number[] },
+  { id:2, title: "Project 2", summary: "yippeie", urlDemo: "link", urlRep: "link", image: "default.png", authorId:2, like: 1110, tags: ["yeeup"], isActive: false, likedBy: [] as number[] },
+  { id:3, title: "Project 3", summary: "whoops", urlDemo: "link", urlRep: "link", image: "default.png", authorId:2, like: 5, tags: ["yup", "yipie"], isActive: true, likedBy: [] as number[] }
 ];
 
 type ProjectRequestBody = {
@@ -27,6 +27,10 @@ type ProjectRequestBody = {
   image?: string;
   authorId?: number;
   tags?: string[];
+};
+
+type LikeRequestBody = {
+  userId?: number;
 };
 
 //--- login ---
@@ -96,7 +100,8 @@ app.post("/api/projects", (req: Request, res: Response) => {
     authorId,
     tags,
     isActive: true,
-    like: 0
+    like: 0,
+    likedBy: [] as number[],
   };
   projects.push(newProject);
   res.status(201).json(newProject);
@@ -118,6 +123,27 @@ app.patch("/api/projects/:id", (req: Request, res: Response) => {
 
   projects[index] = { ...projects[index], ...req.body };
   res.json(projects[index]);
+});
+
+app.post("/api/projects/:id/like", (req: Request, res: Response) => {
+  const id = Number(req.params.id);
+  const { userId } = req.body as LikeRequestBody;
+  const project = projects.find((p) => p.id === id);
+
+  if (!project) {
+    return res.status(404).json({ error: "Project not found" });
+  }
+
+  if (typeof userId !== "number") {
+    return res.status(400).json({ error: "Invalid user id" });
+  }
+
+  if (!project.likedBy.includes(userId)) {
+    project.likedBy.push(userId);
+    project.like += 1;
+  }
+
+  res.json(project);
 });
 
 //--- Others ---

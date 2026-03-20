@@ -20,6 +20,7 @@ function App() {
         <Route element={<ProtectedRoute />}>
           <Route path="/projects" element={<ActiveProjects />} />
           <Route path="/projects/create" element={<ProjectForm />} />
+          <Route path="/projects/edit/:id" element={<ProjectForm />} />
           <Route path="/projects/:id" element={<DetailProject />} />
         </Route>
         <Route path="*" element={<NotFound />} />
