@@ -1,11 +1,12 @@
+import type { FormEvent } from "react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Project } from "../../models/project";
 
-export default function ProjectForm() { //optionnal project, if project not null -> update else -> create
+export default function ProjectForm() {
     const navigate = useNavigate();
     const [title, setTitle] = useState("");
-    const [author, setAuthor] = useState("");
+    const [authorId, setAuthorId] = useState("");
     const [urlDemo, setUrlDemo] = useState("");
     const [urlRep, setUrlRep] = useState("");
     const [image, setImage] = useState("");
@@ -15,16 +16,27 @@ export default function ProjectForm() { //optionnal project, if project not null
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     const handleSubmit = async (
-        e: React.FormEvent<HTMLFormElement>,
+        e: FormEvent<HTMLFormElement>,
     ): Promise<void> => {
         e.preventDefault();
         setIsSubmitting(true);
         setError("");
         try {
-            await Project.create(title, summary, urlDemo, urlRep, image, author, 0, tags );
-            navigate("/api/projects", { replace: true });
+            await Project.create({
+                title,
+                summary,
+                urlDemo,
+                urlRep,
+                image,
+                authorId: Number(authorId),
+                tags: tags
+                    .split(",")
+                    .map((tag) => tag.trim())
+                    .filter(Boolean),
+            });
+            navigate("/projects", { replace: true });
         } catch {
-            setError("Invalid username or password");
+            setError("La creation du projet a echoue.");
         } finally {
             setIsSubmitting(false);
         }
@@ -54,7 +66,7 @@ export default function ProjectForm() { //optionnal project, if project not null
                     htmlFor="summary"
                     className="block text-sm font-medium text-gray-700 mb-1"
                 >
-                    Description court du projet
+                    Description courte du projet
                 </label>
                 <input
                     id="summary"
@@ -68,16 +80,17 @@ export default function ProjectForm() { //optionnal project, if project not null
 
             <div>
                 <label
-                    htmlFor="author"
+                    htmlFor="authorId"
                     className="block text-sm font-medium text-gray-700 mb-1"
                 >
-                    Auteur du projet
+                    Identifiant de l'auteur
                 </label>
                 <input
-                    id="author"
-                    type="text"
-                    value={author}
-                    onChange={(e) => setAuthor(e.target.value)} //set the value of this to the id of the user
+                    id="authorId"
+                    type="number"
+                    min="1"
+                    value={authorId}
+                    onChange={(e) => setAuthorId(e.target.value)}
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                     required
                 />
@@ -126,9 +139,10 @@ export default function ProjectForm() { //optionnal project, if project not null
                 </label>
                 <input
                     id="image"
-                    type="file"
+                    type="text"
                     value={image}
                     onChange={(e) => setImage(e.target.value)}
+                    placeholder="default.png"
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                     required
                 />
@@ -143,13 +157,16 @@ export default function ProjectForm() { //optionnal project, if project not null
                 </label>
                 <input
                     id="tags"
-                    type="text" //liste d'éléments -> tags
+                    type="text"
                     value={tags}
                     onChange={(e) => setTags(e.target.value)}
+                    placeholder="react, typescript, api"
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                     required
                 />
             </div>
+
+            {error ? <p className="text-sm text-red-600">{error}</p> : null}
 
             <button
                 type="submit"

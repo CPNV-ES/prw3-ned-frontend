@@ -13,10 +13,21 @@ const users = [
   { id: 1, name: "John Doe", username: "johndoe" },
   { id: 2, name: "Jane Smith", username: "janesmith" },
 ];
-const projects = [
- { id:1, title: "Project 1", summary: "yippie", urlDemo: "link", urlRep: "link", image: "default.png", authorId:1, like: 0, tags: ["yup", "yes"] },
- { id:2, title: "Project 2", summary: "yippeie", urlDemo: "link", urlRep: "link", image: "default.png", authorId:2, like: 1110, tags: ["yeeup"] }
+let projects = [
+  { id:1, title: "Project 1", summary: "yippie", urlDemo: "link", urlRep: "link", image: "default.png", authorId:1, like: 0, tags: ["yup", "yes"], isActive: true },
+  { id:2, title: "Project 2", summary: "yippeie", urlDemo: "link", urlRep: "link", image: "default.png", authorId:2, like: 1110, tags: ["yeeup"], isActive: false },
+  { id:3, title: "Project 3", summary: "whoops", urlDemo: "link", urlRep: "link", image: "default.png", authorId:2, like: 5, tags: ["yup", "yipie"], isActive: true }
 ];
+
+type ProjectRequestBody = {
+  title?: string;
+  summary?: string;
+  urlDemo?: string;
+  urlRep?: string;
+  image?: string;
+  authorId?: number;
+  tags?: string[];
+};
 
 //--- login ---
 app.get("/api/sessions", (req: Request, res: Response) => {
@@ -48,8 +59,66 @@ app.delete("/api/sessions", (req: Request, res: Response) => {
 
 //--- Projects ---
 
-// 6 apps to do
+app.get("/api/projects", (req: Request, res: Response) => {
+  res.json(projects);
+}); 
 
+app.get("/api/projects/:id", (req: Request, res: Response) => {
+  const id = Number(req.params.id);
+  const project = projects.find(p => p.id === id);
+  if (!project) return res.status(404).json({ error: "Not found" });
+  res.json(project);
+});
+
+app.post("/api/projects", (req: Request, res: Response) => {
+  const { title, summary, urlDemo, urlRep, image, authorId, tags } =
+    req.body as ProjectRequestBody;
+
+  if (
+    !title ||
+    !summary ||
+    !urlDemo ||
+    !urlRep ||
+    !image ||
+    typeof authorId !== "number" ||
+    !Array.isArray(tags)
+  ) {
+    return res.status(400).json({ error: "Invalid project payload" });
+  }
+
+  const newProject = {
+    id: Date.now(),
+    title,
+    summary,
+    urlDemo,
+    urlRep,
+    image,
+    authorId,
+    tags,
+    isActive: true,
+    like: 0
+  };
+  projects.push(newProject);
+  res.status(201).json(newProject);
+});
+
+app.delete("/api/projects/:id", (req: Request, res: Response) => {
+  const id = Number(req.params.id);
+  projects = projects.filter(p => p.id !== id);
+  res.json({ message: "Deleted" });
+});
+
+app.patch("/api/projects/:id", (req: Request, res: Response) => {
+  const id = Number(req.params.id);
+  const index = projects.findIndex(p => p.id === id);
+
+  if (index === -1) {
+    return res.status(404).json({ error: "Not found" });
+  }
+
+  projects[index] = { ...projects[index], ...req.body };
+  res.json(projects[index]);
+});
 
 //--- Others ---
 

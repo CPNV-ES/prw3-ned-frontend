@@ -1,9 +1,3 @@
-import type { Project } from "../../models/project";
-
-export default function DetailProject(project: Project){
-    return (
-    <>
-        <p> Projects.tsx</p>
-    </>    
-    )
+export default function DetailProject() {
+    return <p>Projet en cours de chargement...</p>;
 }

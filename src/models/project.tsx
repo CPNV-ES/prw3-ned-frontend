@@ -1,50 +1,78 @@
 import { Model } from "./model";
 import type { User } from "./user";
 
-export class Project extends Model {
+const API_URL = "/api/projects";
+
+export type ProjectPayload = {
   title: string;
   summary: string;
   urlDemo: string;
   urlRep: string;
   image: string;
   authorId: number;
-  like: number;
+  like?: number;
   tags: string[];
+  isActive?: boolean;
+};
+
+export class Project extends Model {
+  id!: number;
+  title!: string;
+  summary!: string;
+  urlDemo!: string;
+  urlRep!: string;
+  image!: string;
+  authorId!: number;
+  like!: number;
+  tags!: string[];
+  isActive!: boolean;
 
 
-  constructor(title: string, summary: string, urlDemo: string, urlRep: string, image: string, authorId: number, like: number, tags: string[]) {
+  constructor(data: ProjectPayload & { id?: number }) {
     super();
-    this.title = title;
-    this.summary = summary;
-    this.urlDemo = urlDemo;
-    this.urlRep = urlRep;
-    this.image = image;
-    this.authorId = authorId;
-    this.like = like;
-    this.tags = tags;
+    Object.assign(this, data);
   }
 
-  static async getAll(): Promise<Project[] | null> { //remove null when doing it
-    return null ;
+  static async getAll(): Promise<Project[]> {
+    const res = await this.send_request("GET", API_URL);
+
+    if (!res.ok) {
+      throw new Error("Project fetch failed");
+    }
+
+    const data = await res.json();
+    return data.map((p: any) => new Project(p));
   }
 
   static async getCurrent(projectId: number): Promise<Project | null> {
-    return null;
-  } //null if not found?
-
-  static async create(title: string, summary: string, urlDemo: string, urlRep: string, image: string, authorId: number, like: number, tags: string[]): Promise<void> {
-
+    const res = await this.send_request("GET", `${API_URL}/${projectId}`);
+    if (!res.ok) return null;
+    const data = await res.json();
+    return new Project(data);
   }
 
-  static async update(request: Request, projectId: number ): Promise<void> {
+  static async create(project: ProjectPayload): Promise<Project> {
+    const response = await this.send_request("POST", API_URL, project);
 
+    if (!response.ok) {
+      throw new Error("Project creation failed");
+    }
+
+    const data = await response.json();
+    return new Project(data);
+  }
+
+  static async update(projectId: number, project: Partial<Project>): Promise<void> {
+    await this.send_request("PATCH", `${API_URL}/${projectId}`, project);
   }
 
   static async delete(projectId: number): Promise<void> {
-
+    await this.send_request("DELETE", `${API_URL}/${projectId}`);
   }
 
-  static async liked(projectId: number, user: User): Promise<void>{
-
+  static async liked(projectId: number, user: User): Promise<void> {
+    await this.send_request("POST", `${API_URL}/${projectId}/like`, {
+      userId: user.id,
+    });
   }
 }
