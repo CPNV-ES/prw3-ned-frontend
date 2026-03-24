@@ -87,7 +87,8 @@ export default function DetailProject() {
         <p className="text-gray-700 mb-4">{project.summary}</p>
 
         <div className="mb-4">
-          <strong>Author :</strong> {project.authorUsername ?? `#${project.authorId}`}
+          <strong>Author :</strong>{" "}
+          {project.authorUsername ?? `#${project.authorId}`}
         </div>
 
         <div className="mb-4">
@@ -108,7 +109,11 @@ export default function DetailProject() {
               disabled={isLiking || currentUser === null}
               className="bg-blue-500 text-white px-4 py-2 rounded-xl hover:bg-blue-600 disabled:bg-gray-400"
             >
-              {isLiking ? "Updating..." : hasLiked ? "Remove the like" : "Like the project"}
+              {isLiking
+                ? "Updating..."
+                : hasLiked
+                  ? "Remove the like"
+                  : "Like the project"}
             </button>
           )}
 

@@ -1,7 +1,7 @@
 import { Model } from "./model";
 
 export class User extends Model {
-  id: number
+  id: number;
   username: string;
   name: string;
 
@@ -35,7 +35,7 @@ export class User extends Model {
     const data = await response.json();
     localStorage.setItem("token", data.token);
     console.log("Login successful, token stored:", data.token);
-    return new User(data.user.id,data.user.username, data.user.name);
+    return new User(data.user.id, data.user.username, data.user.name);
   }
 
   static async current(): Promise<User | null> {
@@ -47,6 +47,6 @@ export class User extends Model {
     }
 
     const data = await response.json();
-    return new User(data.user.id,data.user.username, data.user.name);
+    return new User(data.user.id, data.user.username, data.user.name);
   }
 }

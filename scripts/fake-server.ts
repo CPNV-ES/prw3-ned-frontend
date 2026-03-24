@@ -14,9 +14,45 @@ const users = [
   { id: 2, name: "Jane Smith", username: "janesmith" },
 ];
 let projects = [
-  { id:1, title: "Project 1", summary: "yippie", urlDemo: "link", urlRep: "link", image: "default.png", authorId:1, like: 0, tags: ["yup", "yes"], isActive: true, likedBy: [] as number[] },
-  { id:2, title: "Project 2", summary: "yippeie", urlDemo: "link", urlRep: "link", image: "default.png", authorId:2, like: 1110, tags: ["yeeup"], isActive: false, likedBy: [] as number[] },
-  { id:3, title: "Project 3", summary: "whoops", urlDemo: "link", urlRep: "link", image: "default.png", authorId:2, like: 5, tags: ["yup", "yipie"], isActive: true, likedBy: [] as number[] }
+  {
+    id: 1,
+    title: "Project 1",
+    summary: "yippie",
+    urlDemo: "link",
+    urlRep: "link",
+    image: "default.png",
+    authorId: 1,
+    like: 0,
+    tags: ["yup", "yes"],
+    isActive: true,
+    likedBy: [] as number[],
+  },
+  {
+    id: 2,
+    title: "Project 2",
+    summary: "yippeie",
+    urlDemo: "link",
+    urlRep: "link",
+    image: "default.png",
+    authorId: 2,
+    like: 1110,
+    tags: ["yeeup"],
+    isActive: false,
+    likedBy: [] as number[],
+  },
+  {
+    id: 3,
+    title: "Project 3",
+    summary: "whoops",
+    urlDemo: "link",
+    urlRep: "link",
+    image: "default.png",
+    authorId: 2,
+    like: 5,
+    tags: ["yup", "yipie"],
+    isActive: true,
+    likedBy: [] as number[],
+  },
 ];
 
 type ProjectRequestBody = {
@@ -82,11 +118,11 @@ app.delete("/api/sessions", (req: Request, res: Response) => {
 
 app.get("/api/projects", (req: Request, res: Response) => {
   res.json(projects.map(enrichProject));
-}); 
+});
 
 app.get("/api/projects/:id", (req: Request, res: Response) => {
   const id = Number(req.params.id);
-  const project = projects.find(p => p.id === id);
+  const project = projects.find((p) => p.id === id);
   if (!project) return res.status(404).json({ error: "Not found" });
   res.json(enrichProject(project));
 });
@@ -141,14 +177,14 @@ app.delete("/api/projects/:id", (req: Request, res: Response) => {
     return res.status(403).json({ error: "Forbidden" });
   }
 
-  projects = projects.filter(p => p.id !== id);
+  projects = projects.filter((p) => p.id !== id);
   res.json({ message: "Deleted" });
 });
 
 app.patch("/api/projects/:id", (req: Request, res: Response) => {
   const currentUser = getAuthenticatedUser(req);
   const id = Number(req.params.id);
-  const index = projects.findIndex(p => p.id === id);
+  const index = projects.findIndex((p) => p.id === id);
 
   if (!currentUser) {
     return res.status(401).json({ error: "Unauthorized" });

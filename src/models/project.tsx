@@ -15,6 +15,12 @@ export type ProjectPayload = {
   isActive?: boolean;
 };
 
+type ProjectResponse = ProjectPayload & {
+  id?: number;
+  authorUsername?: string;
+  likedBy?: number[];
+};
+
 export class Project extends Model {
   id!: number;
   authorUsername?: string;
@@ -29,8 +35,7 @@ export class Project extends Model {
   tags!: string[];
   isActive!: boolean;
 
-
-  constructor(data: ProjectPayload & { id?: number }) {
+  constructor(data: ProjectResponse) {
     super();
     Object.assign(this, data);
   }
@@ -42,8 +47,8 @@ export class Project extends Model {
       throw new Error("Project fetch failed");
     }
 
-    const data = await res.json();
-    return data.map((p: any) => new Project(p));
+    const data: ProjectResponse[] = await res.json();
+    return data.map((project) => new Project(project));
   }
 
   static async getCurrent(projectId: number): Promise<Project | null> {
@@ -64,8 +69,15 @@ export class Project extends Model {
     return new Project(data);
   }
 
-  static async update(projectId: number, project: Partial<Project>): Promise<void> {
-    const response = await this.send_request("PATCH", `${API_URL}/${projectId}`, project);
+  static async update(
+    projectId: number,
+    project: Partial<Project>,
+  ): Promise<void> {
+    const response = await this.send_request(
+      "PATCH",
+      `${API_URL}/${projectId}`,
+      project,
+    );
 
     if (!response.ok) {
       throw new Error("Project update failed");
@@ -73,7 +85,10 @@ export class Project extends Model {
   }
 
   static async delete(projectId: number): Promise<void> {
-    const response = await this.send_request("DELETE", `${API_URL}/${projectId}`);
+    const response = await this.send_request(
+      "DELETE",
+      `${API_URL}/${projectId}`,
+    );
 
     if (!response.ok) {
       throw new Error("Project deletion failed");
@@ -81,9 +96,13 @@ export class Project extends Model {
   }
 
   static async liked(projectId: number, user: User): Promise<Project> {
-    const response = await this.send_request("POST", `${API_URL}/${projectId}/like`, {
-      userId: user.id,
-    });
+    const response = await this.send_request(
+      "POST",
+      `${API_URL}/${projectId}/like`,
+      {
+        userId: user.id,
+      },
+    );
 
     if (!response.ok) {
       throw new Error("Project like failed");
