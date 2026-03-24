@@ -1,4 +1,4 @@
-import type { FormEvent } from "react";
+import type { ChangeEvent, FormEvent } from "react";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Project } from "../../models/project";
@@ -11,9 +11,11 @@ export default function ProjectForm() {
     const isEditMode = projectId !== null && !Number.isNaN(projectId);
     const [title, setTitle] = useState("");
     const [authorId, setAuthorId] = useState("");
+    const [authorUsername, setAuthorUsername] = useState("");
     const [urlDemo, setUrlDemo] = useState("");
     const [urlRep, setUrlRep] = useState("");
     const [image, setImage] = useState("");
+    const [imageName, setImageName] = useState("");
     const [tags, setTags] = useState("");
     const [summary, setSummary] = useState("");
     const [error, setError] = useState("");
@@ -52,6 +54,7 @@ export default function ProjectForm() {
                         setIsAuthorized(true);
                         setTitle(project.title);
                         setAuthorId(String(project.authorId));
+                        setAuthorUsername(currentUser.username);
                         setUrlDemo(project.urlDemo);
                         setUrlRep(project.urlRep);
                         setImage(project.image);
@@ -64,6 +67,7 @@ export default function ProjectForm() {
 
                 if (!isCancelled && currentUser) {
                     setAuthorId(String(currentUser.id));
+                    setAuthorUsername(currentUser.username);
                     setIsAuthorized(true);
                 }
             } catch (loadError) {
@@ -83,6 +87,41 @@ export default function ProjectForm() {
             isCancelled = true;
         };
     }, [isEditMode, projectId]);
+
+    const handleImageChange = async (
+        e: ChangeEvent<HTMLInputElement>,
+    ): Promise<void> => {
+        const file = e.target.files?.[0];
+
+        if (!file) {
+            return;
+        }
+
+        const isPng =
+            file.type === "image/png" || file.name.toLowerCase().endsWith(".png");
+
+        if (!isPng) {
+            setError("Only PNG images are allowed.");
+            e.target.value = "";
+            return;
+        }
+
+        try {
+            const fileContent = await new Promise<string>((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = () => resolve(String(reader.result ?? ""));
+                reader.onerror = () => reject(new Error("Image read failed"));
+                reader.readAsDataURL(file);
+            });
+
+            setImage(fileContent);
+            setImageName(file.name);
+            setError("");
+        } catch {
+            setError("The image could not be loaded.");
+            e.target.value = "";
+        }
+    };
 
     const handleSubmit = async (
         e: FormEvent<HTMLFormElement>,
@@ -185,18 +224,17 @@ export default function ProjectForm() {
 
                 <div>
                     <label
-                        htmlFor="authorId"
+                        htmlFor="authorUsername"
                         className="block text-sm font-medium text-gray-700 mb-1"
                     >
                         Author
                     </label>
                     <input
-                        id="authorId"
-                        type="number"
-                        min="1"
-                        value={authorId}
-                        onChange={(e) => setAuthorId(e.target.value)}
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        id="authorUsername"
+                        type="text"
+                        value={authorUsername}
+                        readOnly
+                        className="w-full cursor-not-allowed bg-gray-100 px-4 py-2 border border-gray-300 rounded-lg text-gray-600 focus:outline-none"
                         required
                     />
                 </div>
@@ -244,12 +282,11 @@ export default function ProjectForm() {
                     </label>
                     <input
                         id="image"
-                        type="text"
-                        value={image}
-                        onChange={(e) => setImage(e.target.value)}
-                        placeholder="default.png"
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        required
+                        type="file"
+                        accept=".png,image/png"
+                        onChange={handleImageChange}
+                        className="block w-full rounded-xl border border-dashed border-blue-300 bg-blue-50 px-3 py-3 text-sm text-blue-900 file:mr-4 file:rounded-lg file:border-0 file:bg-blue-600 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-white hover:file:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        required={!isEditMode && !image}
                     />
                 </div>
 

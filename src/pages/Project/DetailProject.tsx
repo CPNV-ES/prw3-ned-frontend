@@ -101,14 +101,16 @@ export default function DetailProject() {
         {error ? <p className="mb-4 text-sm text-red-600">{error}</p> : null}
 
         <div className="flex gap-4 mt-6">
-          <button
-            type="button"
-            onClick={handleLike}
-            disabled={isLiking || currentUser === null}
-            className="bg-blue-500 text-white px-4 py-2 rounded-xl hover:bg-blue-600 disabled:bg-gray-400"
-          >
-            {isLiking ? "Updating..." : hasLiked ? "Remove the like" : "Like the project"}
-          </button>
+          {isAuthor! ? null : (
+            <button
+              type="button"
+              onClick={handleLike}
+              disabled={isLiking || currentUser === null}
+              className="bg-blue-500 text-white px-4 py-2 rounded-xl hover:bg-blue-600 disabled:bg-gray-400"
+            >
+              {isLiking ? "Updating..." : hasLiked ? "Remove the like" : "Like the project"}
+            </button>
+          )}
 
           <a
             href={project.urlDemo}
