@@ -55,11 +55,11 @@ export default function DetailProject() {
   };
 
   if (loading) {
-    return <div className="p-6">Chargement du projet...</div>;
+    return <div className="p-6">Charging the project...</div>;
   }
 
   if (!project) {
-    return <div className="p-6">Projet introuvable</div>;
+    return <div className="p-6">Project not found</div>;
   }
 
   const isAuthor = currentUser?.id === project.authorId;
@@ -72,7 +72,7 @@ export default function DetailProject() {
         onClick={() => navigate(-1)}
         className="mb-4 text-blue-500 hover:underline"
       >
-        ← Retour
+        ← Return
       </button>
 
       <div className="border rounded-2xl p-6 shadow">
@@ -87,7 +87,7 @@ export default function DetailProject() {
         <p className="text-gray-700 mb-4">{project.summary}</p>
 
         <div className="mb-4">
-          <strong>Auteur :</strong> {project.authorUsername ?? `#${project.authorId}`}
+          <strong>Author :</strong> {project.authorUsername ?? `#${project.authorId}`}
         </div>
 
         <div className="mb-4">
@@ -107,7 +107,7 @@ export default function DetailProject() {
             disabled={isLiking || currentUser === null}
             className="bg-blue-500 text-white px-4 py-2 rounded-xl hover:bg-blue-600 disabled:bg-gray-400"
           >
-            {isLiking ? "Mise a jour..." : hasLiked ? "Retirer le like" : "Liker le projet"}
+            {isLiking ? "Updating..." : hasLiked ? "Remove the like" : "Like the project"}
           </button>
 
           <a
@@ -116,7 +116,7 @@ export default function DetailProject() {
             rel="noreferrer"
             className="bg-green-500 text-white px-4 py-2 rounded-xl hover:bg-green-600"
           >
-            Voir la démo
+            See the demo
           </a>
 
           <a
@@ -125,7 +125,7 @@ export default function DetailProject() {
             rel="noreferrer"
             className="bg-gray-800 text-white px-4 py-2 rounded-xl hover:bg-gray-900"
           >
-            Voir le dépôt
+            See the repository
           </a>
 
           {isAuthor ? (
@@ -134,7 +134,7 @@ export default function DetailProject() {
               onClick={() => navigate(`/projects/edit/${project.id}`)}
               className="bg-yellow-500 text-white px-4 py-2 rounded-xl hover:bg-yellow-600"
             >
-              Modifier
+              Modify
             </button>
           ) : null}
         </div>

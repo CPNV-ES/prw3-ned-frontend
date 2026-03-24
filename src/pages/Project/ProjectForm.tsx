@@ -33,7 +33,7 @@ export default function ProjectForm() {
 
                     if (!project) {
                         if (!isCancelled) {
-                            setError("Projet introuvable.");
+                            setError("Project not found");
                             setIsLoading(false);
                         }
                         return;
@@ -41,7 +41,7 @@ export default function ProjectForm() {
 
                     if (!currentUser || currentUser.id !== project.authorId) {
                         if (!isCancelled) {
-                            setError("Seul l'auteur peut modifier ce projet.");
+                            setError("Only the author can modify this project.");
                             setIsAuthorized(false);
                             setIsLoading(false);
                         }
@@ -68,7 +68,7 @@ export default function ProjectForm() {
                 }
             } catch (loadError) {
                 if (!isCancelled) {
-                    setError("Impossible de charger le formulaire.");
+                    setError("Impossible to charge the form.");
                 }
             } finally {
                 if (!isCancelled && !isEditMode) {
@@ -118,8 +118,8 @@ export default function ProjectForm() {
         } catch {
             setError(
                 isEditMode
-                    ? "La mise a jour du projet a echoue."
-                    : "La creation du projet a echoue.",
+                    ? "The update of the project has failed."
+                    : "The cration of the project has failed.",
             );
         } finally {
             setIsSubmitting(false);
@@ -127,7 +127,7 @@ export default function ProjectForm() {
     };
 
     if (isLoading) {
-        return <div className="p-6">Chargement du formulaire...</div>;
+        return <div className="p-6">Charging the project...</div>;
     }
 
     if (!isAuthorized) {
@@ -140,12 +140,12 @@ export default function ProjectForm() {
                 onClick={() => navigate(-1)}
                 className="mb-4 text-blue-500 hover:underline"
             >
-                ← Retour
+                ← Return
             </button>
 
 
             <h1 className="mb-6 text-2xl font-bold">
-                {isEditMode ? "Modifier le projet" : "Créer un projet"}
+                {isEditMode ? "Modify the project" : "Create a new project"}
             </h1>
 
             <form onSubmit={handleSubmit} className="space-y-4">
@@ -154,7 +154,7 @@ export default function ProjectForm() {
                         htmlFor="title"
                         className="block text-sm font-medium text-gray-700 mb-1"
                     >
-                        Titre du projet
+                        Title of the project
                     </label>
                     <input
                         id="title"
@@ -171,7 +171,7 @@ export default function ProjectForm() {
                         htmlFor="summary"
                         className="block text-sm font-medium text-gray-700 mb-1"
                     >
-                        Description courte du projet
+                        Short description of the project
                     </label>
                     <input
                         id="summary"
@@ -188,7 +188,7 @@ export default function ProjectForm() {
                         htmlFor="authorId"
                         className="block text-sm font-medium text-gray-700 mb-1"
                     >
-                        Identifiant de l'auteur
+                        Author
                     </label>
                     <input
                         id="authorId"
@@ -206,7 +206,7 @@ export default function ProjectForm() {
                         htmlFor="urlDemo"
                         className="block text-sm font-medium text-gray-700 mb-1"
                     >
-                        Lien vers la démo
+                        Link to the demo
                     </label>
                     <input
                         id="urlDemo"
@@ -223,7 +223,7 @@ export default function ProjectForm() {
                         htmlFor="urlRep"
                         className="block text-sm font-medium text-gray-700 mb-1"
                     >
-                        Lien vers le dépôt
+                        Link to the repository
                     </label>
                     <input
                         id="urlRep"
@@ -240,7 +240,7 @@ export default function ProjectForm() {
                         htmlFor="image"
                         className="block text-sm font-medium text-gray-700 mb-1"
                     >
-                        Image du projet
+                        Image of the project
                     </label>
                     <input
                         id="image"
@@ -280,11 +280,11 @@ export default function ProjectForm() {
                 >
                     {isSubmitting
                         ? isEditMode
-                            ? "Mise a jour..."
-                            : "Creation..."
+                            ? "Updating..."
+                            : "Creating..."
                         : isEditMode
-                          ? "Mettre a jour le projet"
-                          : "Creer le projet"}
+                          ? "Update the project"
+                          : "Create the project"}
                 </button>
             </form>
         </div>
