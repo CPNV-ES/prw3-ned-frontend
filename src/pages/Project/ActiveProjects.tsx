@@ -8,6 +8,8 @@ export default function ActiveProjects() {
     const [projects, setProjects] = useState<Project[]>([]);
     const [currentUser, setCurrentUser] = useState<User | null>(null);
     const [loading, setLoading] = useState(true);
+    const [selectedTag, setSelectedTag] = useState("all");
+    const [sortBy, setSortBy] = useState("name-asc");
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -55,6 +57,28 @@ export default function ActiveProjects() {
         navigate(`/projects/edit/${id}`);
     };
 
+    const availableTags = Array.from(
+        new Set(projects.flatMap((project) => project.tags)),
+    ).sort((a, b) => a.localeCompare(b));
+
+    const visibleProjects = [...projects]
+        .filter((project) =>
+            selectedTag === "all" ? true : project.tags.includes(selectedTag),
+        )
+        .sort((firstProject, secondProject) => {
+            switch (sortBy) {
+                case "name-desc":
+                    return secondProject.title.localeCompare(firstProject.title);
+                case "likes-desc":
+                    return secondProject.like - firstProject.like;
+                case "likes-asc":
+                    return firstProject.like - secondProject.like;
+                case "name-asc":
+                default:
+                    return firstProject.title.localeCompare(secondProject.title);
+            }
+        });
+
     if (loading) {
         return <div className="p-4">Charging the projects...</div>;
     }
@@ -80,8 +104,56 @@ export default function ActiveProjects() {
             {projects.length === 0 ? (
                 <p>No active project has been found</p>
             ) : (
-                <div className="grid gap-4">
-                    {projects.map((project) => {
+                <>
+                    <div className="mb-6 grid gap-4 md:grid-cols-2">
+                        <div>
+                            <label
+                                htmlFor="tagFilter"
+                                className="mb-1 block text-sm font-medium text-gray-700"
+                            >
+                                Filter by tag
+                            </label>
+                            <select
+                                id="tagFilter"
+                                value={selectedTag}
+                                onChange={(e) => setSelectedTag(e.target.value)}
+                                className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            >
+                                <option value="all">All tags</option>
+                                {availableTags.map((tag) => (
+                                    <option key={tag} value={tag}>
+                                        {tag}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+
+                        <div>
+                            <label
+                                htmlFor="sortProjects"
+                                className="mb-1 block text-sm font-medium text-gray-700"
+                            >
+                                Order by
+                            </label>
+                            <select
+                                id="sortProjects"
+                                value={sortBy}
+                                onChange={(e) => setSortBy(e.target.value)}
+                                className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            >
+                                <option value="name-asc">Name (A-Z)</option>
+                                <option value="name-desc">Name (Z-A)</option>
+                                <option value="likes-desc">Likes (highest first)</option>
+                                <option value="likes-asc">Likes (lowest first)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    {visibleProjects.length === 0 ? (
+                        <p>No active project matches the selected tag</p>
+                    ) : (
+                        <div className="grid gap-4">
+                            {visibleProjects.map((project) => {
                         const isAuthor = currentUser?.id === project.authorId;
 
                         return (
@@ -122,8 +194,10 @@ export default function ActiveProjects() {
                                 </div>
                             </div>
                         );
-                    })}
-                </div>
+                            })}
+                        </div>
+                    )}
+                </>
             )}
         </div>
     );
