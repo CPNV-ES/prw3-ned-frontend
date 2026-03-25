@@ -1,11 +1,13 @@
 import { Model } from "./model";
 
 export class User extends Model {
+  id: number;
   username: string;
   name: string;
 
-  constructor(username: string, name: string) {
+  constructor(id: number, username: string, name: string) {
     super();
+    this.id = id;
     this.username = username;
     this.name = name;
   }
@@ -33,7 +35,7 @@ export class User extends Model {
     const data = await response.json();
     localStorage.setItem("token", data.token);
     console.log("Login successful, token stored:", data.token);
-    return new User(data.user.username, data.user.name);
+    return new User(data.user.id, data.user.username, data.user.name);
   }
 
   static async current(): Promise<User | null> {
@@ -45,6 +47,6 @@ export class User extends Model {
     }
 
     const data = await response.json();
-    return new User(data.user.username, data.user.name);
+    return new User(data.user.id, data.user.username, data.user.name);
   }
 }
