@@ -18,8 +18,8 @@ Users will be able to:
 
 ### Prerequisites
 
-Node.js 22.18.0
-npm 10.9.3
+- Node.js 22.18.0
+- NPM 10.9.3
 
 ## Deployment
 
@@ -70,10 +70,32 @@ Not yet implemented
 
 ```shell
 ├───public
+|       vite.svg
+├───scripts
+|       fake-server.ts
 └───src
-  ├───assets
-  ├───components
-  └───pages
+    │   App.tsx
+    │   index.css
+    │   main.tsx
+    ├───assets
+    │       react.svg
+    ├───components
+    │       Header.tsx
+    ├───models
+    │       model.tsx
+    │       project.tsx
+    │       user.tsx
+    ├───pages
+    │   │   Home.tsx
+    │   │   Login.tsx
+    │   │   NotFound.tsx
+    │   │
+    │   └───Project
+    │           ActiveProjects.tsx
+    │           DetailProject.tsx
+    │           ProjectForm.tsx
+    └───routes
+            AuthGuards.tsx
 ```
 
 ## Collaboration
