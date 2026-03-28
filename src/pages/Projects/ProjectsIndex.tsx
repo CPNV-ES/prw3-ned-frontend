@@ -114,156 +114,213 @@ export default function ProjectsIndex() {
   };
 
   return (
-    <div className="p-6">
-      <div className="flex justify-between items-center mb-6">
-        <button
-          onClick={() => navigate(-1)}
-          className="mb-4 text-blue-500 hover:underline"
-        >
-          ← Return
-        </button>
-        <button
-          onClick={handleCreateProject}
-          className="bg-blue-500 text-white px-4 py-2 rounded-xl shadow hover:bg-blue-600"
-        >
-          Create a new project
-        </button>
-      </div>
+    <div className="app-container">
+      <div className="tech-surface-strong mb-6 overflow-hidden">
+        <div className="flex flex-col gap-3 border-b border-slate-200 bg-white/70 px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex items-center gap-3">
+            <div>
+              <h1 className="text-xl font-bold text-slate-900">Projects</h1>
+            </div>
+          </div>
 
-      {error ? <p className="mb-4 text-sm text-red-600">{error}</p> : null}
-
-      <div className="mb-6 space-y-4">
-        <div>
-          <label
-            htmlFor="projectName"
-            className="mb-1 block text-sm font-medium text-gray-700"
+          <button
+            type="button"
+            onClick={handleCreateProject}
+            className="btn-accent"
           >
-            Search by name
-          </label>
-
-          <div className="flex flex-col gap-2 sm:flex-row sm:items-stretch">
-            <input
-              id="projectName"
-              value={nameQuery}
-              onChange={(e) => setNameQuery(e.target.value)}
-              placeholder="Demo Deck"
-              className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-
-            <button
-              type="button"
-              onClick={() => setAppliedNameQuery(nameQuery)}
-              disabled={loading}
-              className="shrink-0 bg-blue-500 text-white px-4 py-2 rounded-xl shadow hover:bg-blue-600 disabled:bg-gray-400"
-            >
-              Search
-            </button>
-          </div>
+            Create project
+          </button>
         </div>
 
-        <div className="rounded-2xl border border-gray-200 bg-gray-50 p-4">
-          <div className="grid gap-3 md:grid-cols-[2fr_1fr_auto] md:items-end">
+        <div className="px-5 py-5">
+          {error ? (
+            <div className="mb-4 rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">
+              {error}
+            </div>
+          ) : null}
+
+          <div className="space-y-4">
             <div>
-              <label
-                htmlFor="projectTags"
-                className="mb-1 block text-sm font-medium text-gray-700"
-              >
-                Filter by tags
+              <label htmlFor="projectName" className="label">
+                Search by name
               </label>
-              <input
-                id="projectTags"
-                value={tagsQuery}
-                onChange={(e) => setTagsQuery(e.target.value)}
-                placeholder="react, typescript"
-                className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
+
+              <div className="flex flex-col gap-2 sm:flex-row sm:items-stretch">
+                <input
+                  id="projectName"
+                  value={nameQuery}
+                  onChange={(e) => setNameQuery(e.target.value)}
+                  placeholder="Demo Deck"
+                  className="input"
+                />
+
+                <button
+                  type="button"
+                  onClick={() => setAppliedNameQuery(nameQuery)}
+                  disabled={loading}
+                  className="btn-primary shrink-0"
+                >
+                  Search
+                </button>
+              </div>
             </div>
 
-            <div>
-              <label
-                htmlFor="sortProjects"
-                className="mb-1 block text-sm font-medium text-gray-700"
-              >
-                Sort
-              </label>
-              <select
-                id="sortProjects"
-                value={sort}
-                onChange={(e) => setSort(e.target.value as SortOption)}
-                className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              >
-                <option value="date-desc">Creation date (newest first)</option>
-                <option value="date-asc">Creation date (oldest first)</option>
-                <option value="likes-desc">Likes (highest first)</option>
-                <option value="likes-asc">Likes (lowest first)</option>
-              </select>
-            </div>
+            <div className="tech-surface p-4">
+              <div className="grid gap-3 md:grid-cols-[2fr_1fr_auto] md:items-end">
+                <div>
+                  <label htmlFor="projectTags" className="label">
+                    Filter by tags
+                  </label>
+                  <input
+                    id="projectTags"
+                    value={tagsQuery}
+                    onChange={(e) => setTagsQuery(e.target.value)}
+                    placeholder="react, typescript"
+                    className="input"
+                  />
+                </div>
 
-            <button
-              type="button"
-              onClick={() => {
-                setAppliedTagsQuery(tagsQuery);
-                setAppliedSort(sort);
-              }}
-              disabled={loading}
-              className="w-full md:w-auto bg-blue-500 text-white px-4 py-2 rounded-xl shadow hover:bg-blue-600 disabled:bg-gray-400"
-            >
-              Apply filters
-            </button>
+                <div>
+                  <label htmlFor="sortProjects" className="label">
+                    Sort
+                  </label>
+                  <select
+                    id="sortProjects"
+                    value={sort}
+                    onChange={(e) => setSort(e.target.value as SortOption)}
+                    className="select"
+                  >
+                    <option value="date-desc">
+                      Creation date (newest first)
+                    </option>
+                    <option value="date-asc">
+                      Creation date (oldest first)
+                    </option>
+                    <option value="likes-desc">Likes (highest first)</option>
+                    <option value="likes-asc">Likes (lowest first)</option>
+                  </select>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    setAppliedTagsQuery(tagsQuery);
+                    setAppliedSort(sort);
+                  }}
+                  disabled={loading}
+                  className="btn-primary w-full md:w-auto"
+                >
+                  Apply filters
+                </button>
+              </div>
+            </div>
           </div>
+
+          {loading ? (
+            <div className="mt-6 text-sm text-slate-600">
+              Loading projects...
+            </div>
+          ) : null}
+
+          {!loading && projects.length === 0 ? (
+            <div className="mt-6 tech-surface p-6 text-sm text-slate-700">
+              No projects found.
+            </div>
+          ) : null}
+
+          {projects.length > 0 ? (
+            <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {projects.map((project) => {
+                const isAuthor = currentUser?.id === project.author_id;
+                const createdLabel = project.created_at
+                  ? new Date(project.created_at).toLocaleDateString()
+                  : null;
+
+                return (
+                  <div
+                    key={project.id}
+                    className="tech-surface overflow-hidden transition hover:border-slate-300 hover:shadow-md"
+                  >
+                    <div className="aspect-[16/9] w-full bg-slate-100">
+                      <img
+                        src={project.image_url}
+                        alt={project.title}
+                        className="h-full w-full object-cover"
+                        loading="lazy"
+                      />
+                    </div>
+
+                    <div className="p-4">
+                      <div className="flex items-start justify-between gap-3">
+                        <h2 className="text-base font-bold text-slate-900">
+                          {project.title}
+                        </h2>
+                        <span className="badge">{project.likes} likes</span>
+                      </div>
+
+                      <p className="mt-2 line-clamp-3 text-sm text-slate-700">
+                        {project.summary}
+                      </p>
+
+                      <div className="mt-3 flex flex-wrap gap-2">
+                        {project.tags.slice(0, 6).map((tag) => (
+                          <span key={tag} className="badge">
+                            {tag}
+                          </span>
+                        ))}
+                        {project.tags.length > 6 ? (
+                          <span className="badge">
+                            +{project.tags.length - 6}
+                          </span>
+                        ) : null}
+                      </div>
+
+                      <div className="mt-3 flex items-center justify-between text-xs text-slate-500">
+                        <span>
+                          {project.author_name
+                            ? `by ${project.author_name}`
+                            : `author #${project.author_id}`}
+                        </span>
+                        {createdLabel ? <span>{createdLabel}</span> : null}
+                      </div>
+
+                      <div className="mt-4 flex flex-wrap gap-2">
+                        <button
+                          type="button"
+                          onClick={() => handleView(project.id)}
+                          className="btn-accent"
+                        >
+                          Details
+                        </button>
+
+                        {isAuthor ? (
+                          <button
+                            type="button"
+                            onClick={() => handleEdit(project.id)}
+                            className="btn-warning"
+                          >
+                            Edit
+                          </button>
+                        ) : null}
+
+                        {isAuthor ? (
+                          <button
+                            type="button"
+                            onClick={() => handleDelete(project.id)}
+                            className="btn-danger"
+                          >
+                            Delete
+                          </button>
+                        ) : null}
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          ) : null}
         </div>
       </div>
-
-      {loading ? <div className="p-4">Loading the projects...</div> : null}
-
-      {!loading && projects.length === 0 ? <p>No projects found</p> : null}
-
-      {projects.length > 0 ? (
-        <div className="grid gap-4">
-          {projects.map((project) => {
-            const isAuthor = currentUser?.id === project.author_id;
-
-            return (
-              <div
-                key={project.id}
-                className="p-4 border rounded-2xl shadow-sm hover:shadow-md transition"
-              >
-                <h2 className="text-lg font-semibold">{project.title}</h2>
-                <p className="text-gray-600">{project.summary}</p>
-                <p className="text-gray-600">Likes: {project.likes}</p>
-                <p className="text-gray-600">Tags: {project.tags.join(", ")}</p>
-
-                <div className="flex gap-2 mt-4">
-                  <button
-                    onClick={() => handleView(project.id)}
-                    className="bg-green-500 text-white px-3 py-1 rounded-lg hover:bg-green-600"
-                  >
-                    See in detail
-                  </button>
-
-                  {isAuthor ? (
-                    <button
-                      onClick={() => handleEdit(project.id)}
-                      className="bg-yellow-500 text-white px-3 py-1 rounded-lg hover:bg-yellow-600"
-                    >
-                      Modify
-                    </button>
-                  ) : null}
-
-                  {isAuthor ? (
-                    <button
-                      onClick={() => handleDelete(project.id)}
-                      className="bg-red-500 text-white px-3 py-1 rounded-lg hover:bg-red-600"
-                    >
-                      Delete
-                    </button>
-                  ) : null}
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      ) : null}
     </div>
   );
 }

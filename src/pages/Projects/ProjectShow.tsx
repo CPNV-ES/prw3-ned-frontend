@@ -55,91 +55,116 @@ export default function ProjectDetail() {
   };
 
   if (loading) {
-    return <div className="p-6">Charging the project...</div>;
+    return <div className="app-container">Loading project...</div>;
   }
 
   if (!project) {
-    return <div className="p-6">Project not found</div>;
+    return <div className="app-container">Project not found</div>;
   }
 
   const isAuthor = currentUser?.id === project.author_id;
 
   return (
-    <div className="p-6 max-w-3xl mx-auto">
+    <div className="app-container">
       <button
+        type="button"
         onClick={() => navigate(-1)}
-        className="mb-4 text-blue-500 hover:underline"
+        className="btn-ghost mb-4 px-3 py-1.5"
       >
-        ← Return
+        Return
       </button>
 
-      <div className="border rounded-2xl p-6 shadow">
-        <h1 className="text-2xl font-bold mb-4">{project.title}</h1>
-
-        <img
-          src={project.image_url}
-          alt={project.title}
-          className="w-full h-60 object-cover rounded-xl mb-4"
-        />
-
-        <p className="text-gray-700 mb-4">{project.summary}</p>
-
-        <div className="mb-4">
-          <strong>Author :</strong>{" "}
-          {project.author_name ?? `#${project.author_id}`}
+      <div className="tech-surface-strong overflow-hidden">
+        <div className="aspect-[16/9] w-full bg-slate-100">
+          <img
+            src={project.image_url}
+            alt={project.title}
+            className="h-full w-full object-cover"
+          />
         </div>
 
-        <div className="mb-4">
-          <strong>Tags :</strong> {project.tags.join(", ")}
-        </div>
+        <div className="p-6">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+            <div>
+              <h1 className="text-2xl font-bold text-slate-900">
+                {project.title}
+              </h1>
+              <div className="mt-2 flex flex-wrap items-center gap-2 text-xs text-slate-600">
+                <span className="badge">
+                  {project.author_name
+                    ? `by ${project.author_name}`
+                    : `author #${project.author_id}`}
+                </span>
+                <span className="badge">{project.likes} likes</span>
+                {project.created_at ? (
+                  <span className="badge">
+                    {new Date(project.created_at).toLocaleDateString()}
+                  </span>
+                ) : null}
+              </div>
+            </div>
 
-        <div className="mb-4">
-          <strong>Likes :</strong> {project.likes}
-        </div>
+            <div className="flex flex-wrap gap-2">
+              {isAuthor ? (
+                <button
+                  type="button"
+                  onClick={() => navigate(`/projects/edit/${project.id}`)}
+                  className="btn-warning"
+                >
+                  Edit
+                </button>
+              ) : null}
 
-        {error ? <p className="mb-4 text-sm text-red-600">{error}</p> : null}
+              {isAuthor ? null : (
+                <button
+                  type="button"
+                  onClick={handleLike}
+                  disabled={isLiking || currentUser === null}
+                  className="btn-accent"
+                >
+                  {isLiking ? "Updating..." : "Like"}
+                </button>
+              )}
+            </div>
+          </div>
 
-        <div className="flex gap-4 mt-6">
-          {isAuthor! ? null : (
-            <button
-              type="button"
-              onClick={handleLike}
-              disabled={isLiking || currentUser === null}
-              className="bg-blue-500 text-white px-4 py-2 rounded-xl hover:bg-blue-600 disabled:bg-gray-400"
-            >
-              {isLiking
-                ? "Updating..."
-                : "Like the project"}
-            </button>
-          )}
+          <p className="mt-5 text-sm leading-relaxed text-slate-700">
+            {project.summary}
+          </p>
 
-          <a
-            href={project.demo_url}
-            target="_blank"
-            rel="noreferrer"
-            className="bg-green-500 text-white px-4 py-2 rounded-xl hover:bg-green-600"
-          >
-            See the demo
-          </a>
+          <div className="mt-5 flex flex-wrap gap-2">
+            {project.tags.map((tag) => (
+              <span key={tag} className="badge">
+                {tag}
+              </span>
+            ))}
+          </div>
 
-          <a
-            href={project.repository_url}
-            target="_blank"
-            rel="noreferrer"
-            className="bg-gray-800 text-white px-4 py-2 rounded-xl hover:bg-gray-900"
-          >
-            See the repository
-          </a>
-
-          {isAuthor ? (
-            <button
-              type="button"
-              onClick={() => navigate(`/projects/edit/${project.id}`)}
-              className="bg-yellow-500 text-white px-4 py-2 rounded-xl hover:bg-yellow-600"
-            >
-              Modify
-            </button>
+          {error ? (
+            <div className="mt-5 rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">
+              {error}
+            </div>
           ) : null}
+
+          <div className="mt-6 flex flex-col gap-2 sm:flex-row">
+            <a
+              href={project.demo_url}
+              target="_blank"
+              rel="noreferrer"
+              className="btn-primary"
+            >
+              Open demo
+            </a>
+
+            <a
+              href={project.repository_url}
+              target="_blank"
+              rel="noreferrer"
+              className="btn-ghost"
+            >
+              View repository
+            </a>
+          </div>
         </div>
       </div>
     </div>

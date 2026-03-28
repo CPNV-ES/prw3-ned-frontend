@@ -151,153 +151,159 @@ export default function ProjectForm() {
   };
 
   if (isLoading) {
-    return <div className="p-6">Charging the project...</div>;
+    return <div className="app-container">Loading project...</div>;
   }
 
   if (!isAuthorized) {
-    return <div className="p-6 text-red-600">{error}</div>;
+    return (
+      <div className="app-container">
+        <div className="tech-surface p-6 text-sm text-rose-700">{error}</div>
+      </div>
+    );
   }
 
   return (
-    <div className="mx-auto max-w-3xl p-6">
+    <div className="app-container">
       <button
+        type="button"
         onClick={() => navigate(-1)}
-        className="mb-4 text-blue-500 hover:underline"
+        className="btn-ghost mb-4 px-3 py-1.5"
       >
-        ← Return
+        Return
       </button>
 
-      <h1 className="mb-6 text-2xl font-bold">
-        {isEditMode ? "Modify the project" : "Create a new project"}
-      </h1>
-
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div>
-          <label
-            htmlFor="title"
-            className="block text-sm font-medium text-gray-700 mb-1"
-          >
-            Title of the project
-          </label>
-          <input
-            id="title"
-            type="text"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            required
-          />
-        </div>
-
-        <div>
-          <label
-            htmlFor="summary"
-            className="block text-sm font-medium text-gray-700 mb-1"
-          >
-            Short description of the project
-          </label>
-          <input
-            id="summary"
-            type="text"
-            value={summary}
-            onChange={(e) => setSummary(e.target.value)}
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            required
-          />
-        </div>
-
-        <div>
-          <label
-            htmlFor="urlDemo"
-            className="block text-sm font-medium text-gray-700 mb-1"
-          >
-            Link to the demo
-          </label>
-          <input
-            id="urlDemo"
-            type="url"
-            value={demoUrl}
-            onChange={(e) => setDemoUrl(e.target.value)}
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            required
-          />
-        </div>
-
-        <div>
-          <label
-            htmlFor="urlRep"
-            className="block text-sm font-medium text-gray-700 mb-1"
-          >
-            Link to the repository
-          </label>
-          <input
-            id="urlRep"
-            type="url"
-            value={repositoryUrl}
-            onChange={(e) => setRepositoryUrl(e.target.value)}
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            required
-          />
-        </div>
-
-        <div>
-          <label
-            htmlFor="image"
-            className="block text-sm font-medium text-gray-700 mb-1"
-          >
-            Image of the project
-          </label>
-          <input
-            id="image"
-            type="file"
-            accept=".png,image/png"
-            onChange={handleImageChange}
-            className="block w-full rounded-xl border border-dashed border-blue-300 bg-blue-50 px-3 py-3 text-sm text-blue-900 file:mr-4 file:rounded-lg file:border-0 file:bg-blue-600 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-white hover:file:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            required={!isEditMode && !image}
-          />
-          <p className="mt-1 text-sm text-blue-800">
-            {imageName
-              ? `Selected PNG: ${imageName}`
-              : isEditMode && existingImageUrl
-                ? "Current image kept until you choose a new PNG."
-                : "No file selected."}
+      <div className="tech-surface-strong overflow-hidden">
+        <div className="border-b border-slate-200 bg-white/70 px-6 py-5">
+          <div className="text-xs uppercase tracking-widest text-slate-500">
+            {isEditMode ? "Edit" : "Create"}
+          </div>
+          <h1 className="mt-1 text-2xl font-bold text-slate-900">
+            {isEditMode ? "Modify the project" : "Create a new project"}
+          </h1>
+          <p className="mt-1 text-xs text-slate-600">
+            Fields marked as required must be provided.
           </p>
         </div>
 
-        <div>
-          <label
-            htmlFor="tags"
-            className="block text-sm font-medium text-gray-700 mb-1"
+        <form onSubmit={handleSubmit} className="space-y-4 p-6">
+          <div className="grid gap-4 md:grid-cols-2">
+            <div className="md:col-span-2">
+              <label htmlFor="title" className="label">
+                Title
+              </label>
+              <input
+                id="title"
+                type="text"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                className="input"
+                required
+              />
+            </div>
+
+            <div className="md:col-span-2">
+              <label htmlFor="summary" className="label">
+                Summary
+              </label>
+              <input
+                id="summary"
+                type="text"
+                value={summary}
+                onChange={(e) => setSummary(e.target.value)}
+                className="input"
+                required
+              />
+            </div>
+
+            <div>
+              <label htmlFor="urlDemo" className="label">
+                Demo URL
+              </label>
+              <input
+                id="urlDemo"
+                type="url"
+                value={demoUrl}
+                onChange={(e) => setDemoUrl(e.target.value)}
+                className="input"
+                required
+              />
+            </div>
+
+            <div>
+              <label htmlFor="urlRep" className="label">
+                Repository URL
+              </label>
+              <input
+                id="urlRep"
+                type="url"
+                value={repositoryUrl}
+                onChange={(e) => setRepositoryUrl(e.target.value)}
+                className="input"
+                required
+              />
+            </div>
+
+            <div className="md:col-span-2">
+              <label htmlFor="tags" className="label">
+                Tags
+              </label>
+              <input
+                id="tags"
+                type="text"
+                value={tags}
+                onChange={(e) => setTags(e.target.value)}
+                placeholder="react, typescript, api"
+                className="input"
+                required
+              />
+              <p className="mt-1 text-xs text-slate-500">
+                Comma-separated values.
+              </p>
+            </div>
+
+            <div className="md:col-span-2">
+              <label htmlFor="image" className="label">
+                Project image
+              </label>
+              <input
+                id="image"
+                type="file"
+                accept=".png,image/png"
+                onChange={handleImageChange}
+                className="block w-full rounded-xl border border-dashed border-slate-300 bg-white/80 px-3 py-3 text-sm text-slate-900 file:mr-4 file:rounded-lg file:border-0 file:bg-slate-900 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-white hover:file:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-cyan-500"
+                required={!isEditMode && !image}
+              />
+              <p className="mt-1 text-xs text-slate-500">
+                {imageName
+                  ? `Selected PNG: ${imageName}`
+                  : isEditMode && existingImageUrl
+                    ? "Current image kept until you choose a new PNG."
+                    : "No file selected."}
+              </p>
+            </div>
+          </div>
+
+          {error ? (
+            <div className="rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">
+              {error}
+            </div>
+          ) : null}
+
+          <button
+            type="submit"
+            disabled={isSubmitting}
+            className="btn-primary w-full"
           >
-            Tags
-          </label>
-          <input
-            id="tags"
-            type="text"
-            value={tags}
-            onChange={(e) => setTags(e.target.value)}
-            placeholder="react, typescript, api"
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            required
-          />
-        </div>
-
-        {error ? <p className="text-sm text-red-600">{error}</p> : null}
-
-        <button
-          type="submit"
-          disabled={isSubmitting}
-          className="w-full bg-blue-500 hover:bg-blue-600 disabled:bg-gray-400 text-white font-semibold py-2 rounded-lg transition duration-200"
-        >
-          {isSubmitting
-            ? isEditMode
-              ? "Updating..."
-              : "Creating..."
-            : isEditMode
-              ? "Update the project"
-              : "Create the project"}
-        </button>
-      </form>
+            {isSubmitting
+              ? isEditMode
+                ? "Updating..."
+                : "Creating..."
+              : isEditMode
+                ? "Update the project"
+                : "Create the project"}
+          </button>
+        </form>
+      </div>
     </div>
   );
 }
