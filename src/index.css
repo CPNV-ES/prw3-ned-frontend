@@ -10,7 +10,78 @@
 
 html,
 body {
-  background-color: white;
-  color: black;
-  font-family: "Silkscreen", monospace;
+  min-height: 100%;
+  font-family:
+    "Silkscreen", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+    "Liberation Mono", "Courier New", monospace;
+}
+
+body {
+  color: #0f172a;
+  background:
+    radial-gradient(
+      1200px 600px at 15% -10%,
+      rgba(34, 211, 238, 0.18),
+      transparent 60%
+    ),
+    radial-gradient(
+      900px 520px at 105% 5%,
+      rgba(99, 102, 241, 0.14),
+      transparent 55%
+    ),
+    linear-gradient(to bottom, #f8fafc, #ffffff 40%, #f1f5f9);
+}
+
+@layer components {
+  .app-container {
+    @apply mx-auto w-full max-w-6xl px-4 py-8;
+  }
+
+  .tech-surface {
+    @apply rounded-2xl border border-slate-200/80 bg-white/70 shadow-sm backdrop-blur;
+  }
+
+  .tech-surface-strong {
+    @apply rounded-2xl border border-slate-200 bg-white shadow-md;
+  }
+
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2 text-sm font-semibold transition active:translate-y-px disabled:cursor-not-allowed disabled:opacity-60;
+  }
+
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2 text-sm font-semibold transition active:translate-y-px disabled:cursor-not-allowed disabled:opacity-60 bg-slate-900 text-white shadow-sm hover:bg-slate-800;
+  }
+
+  .btn-accent {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2 text-sm font-semibold transition active:translate-y-px disabled:cursor-not-allowed disabled:opacity-60 bg-cyan-600 text-white shadow-sm hover:bg-cyan-700;
+  }
+
+  .btn-ghost {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2 text-sm font-semibold transition active:translate-y-px disabled:cursor-not-allowed disabled:opacity-60 bg-transparent text-slate-700 hover:bg-slate-100;
+  }
+
+  .btn-warning {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2 text-sm font-semibold transition active:translate-y-px disabled:cursor-not-allowed disabled:opacity-60 bg-amber-500 text-white shadow-sm hover:bg-amber-600;
+  }
+
+  .btn-danger {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2 text-sm font-semibold transition active:translate-y-px disabled:cursor-not-allowed disabled:opacity-60 bg-rose-600 text-white shadow-sm hover:bg-rose-700;
+  }
+
+  .input {
+    @apply w-full rounded-xl border border-slate-300 bg-white/80 px-4 py-2 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-cyan-500;
+  }
+
+  .select {
+    @apply w-full rounded-xl border border-slate-300 bg-white/80 px-4 py-2 text-slate-900 focus:outline-none focus:ring-2 focus:ring-cyan-500;
+  }
+
+  .label {
+    @apply mb-1 block text-xs font-semibold uppercase tracking-wide text-slate-600;
+  }
+
+  .badge {
+    @apply inline-flex items-center rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs text-slate-700;
+  }
 }
