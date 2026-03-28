@@ -1,4 +1,4 @@
-import { apiRequest } from "./client";
+import { apiRequest, ApiError } from "./client";
 
 export type User = {
   id: number;
@@ -22,4 +22,15 @@ export async function listUsers(
 
   const qs = params.toString();
   return apiRequest<User[]>(`/api/users${qs ? `?${qs}` : ""}`);
+}
+
+export async function getUser(userId: number): Promise<User | null> {
+  try {
+    return await apiRequest<User>(`/api/users/${userId}`, { method: "GET" });
+  } catch (err) {
+    if (err instanceof ApiError && err.status === 404) {
+      return null;
+    }
+    throw err;
+  }
 }

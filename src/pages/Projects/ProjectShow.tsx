@@ -172,9 +172,18 @@ export default function ProjectDetail() {
             <div>
               <h1 className="terminal-card-title text-base">{project.title}</h1>
               <div className="terminal-card-meta">
-                {project.author_name
-                  ? `by ${project.author_name}`
-                  : `author #${project.author_id}`}
+                <span>by </span>
+                <button
+                  type="button"
+                  onClick={() => {
+                    navigate(`/users/${project.author_id}`);
+                  }}
+                  className="font-semibold text-white/90 underline decoration-white/40 underline-offset-2 transition hover:text-white hover:decoration-white/70"
+                >
+                  {project.author_name
+                    ? project.author_name
+                    : `author #${project.author_id}`}
+                </button>
                 {project.created_at
                   ? ` | ${new Date(project.created_at).toLocaleDateString()}`
                   : null}
