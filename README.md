@@ -37,12 +37,6 @@ To build:
 npm run build
 ```
 
-to run the mocked backend:
-
-```shell
-npm run fake-server
-```
-
 To start the development server:
 
 ```shell
@@ -71,8 +65,6 @@ Not yet implemented
 ```shell
 ├───public
 |       vite.svg
-├───scripts
-|       fake-server.ts
 └───src
     │   App.tsx
     │   index.css
