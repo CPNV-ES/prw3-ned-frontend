@@ -16,6 +16,14 @@ export type Project = {
   tags: string[];
 };
 
+export type Comment = {
+  id: number;
+  content: string;
+  created_at: string;
+  author_id: number;
+  project_id: number;
+};
+
 export type ProjectQuery = {
   name?: string;
   tags?: string[];
@@ -171,5 +179,23 @@ export async function likeProject(
   return apiRequest<Project>(`${API_URL}/${projectId}/like`, {
     method: "POST",
     body: userId ? { userId } : undefined,
+  });
+}
+
+export async function listProjectComments(
+  projectId: number,
+): Promise<Comment[]> {
+  return apiRequest<Comment[]>(`${API_URL}/${projectId}/comments`, {
+    method: "GET",
+  });
+}
+
+export async function createProjectComment(
+  projectId: number,
+  content: string,
+): Promise<Comment> {
+  return apiRequest<Comment>(`${API_URL}/${projectId}/comments`, {
+    method: "POST",
+    body: { content },
   });
 }
