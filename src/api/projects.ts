@@ -32,6 +32,41 @@ export type ProjectPayload = {
   tags: string[];
 };
 
+type ProjectWriteBody = {
+  title?: string;
+  summary?: string;
+  demo_url?: string;
+  repository_url?: string;
+  tags?: string[];
+};
+
+function normalizeTags(tags: string[]): string[] {
+  return tags.map((tag) => tag.trim()).filter(Boolean);
+}
+
+function toJsonBody(payload: Partial<ProjectPayload>): ProjectWriteBody {
+  const body: ProjectWriteBody = {};
+
+  if (payload.title !== undefined) {
+    body.title = payload.title;
+  }
+  if (payload.summary !== undefined) {
+    body.summary = payload.summary;
+  }
+  if (payload.demo_url !== undefined) {
+    body.demo_url = payload.demo_url;
+  }
+  if (payload.repository_url !== undefined) {
+    body.repository_url = payload.repository_url;
+  }
+
+  if (Array.isArray(payload.tags)) {
+    body.tags = normalizeTags(payload.tags);
+  }
+
+  return body;
+}
+
 function toFormData(payload: Partial<ProjectPayload>): FormData {
   const formData = new FormData();
 
@@ -48,7 +83,10 @@ function toFormData(payload: Partial<ProjectPayload>): FormData {
     formData.append("repository_url", payload.repository_url);
   }
   if (Array.isArray(payload.tags)) {
-    formData.append("tags", JSON.stringify(payload.tags));
+    const tags = normalizeTags(payload.tags);
+    for (const tag of tags) {
+      formData.append("tags", tag);
+    }
   }
   if (payload.image instanceof File) {
     formData.append("image", payload.image);
@@ -104,9 +142,10 @@ export async function getProject(projectId: number): Promise<Project | null> {
 }
 
 export async function createProject(payload: ProjectPayload): Promise<Project> {
+  const hasImage = payload.image instanceof File;
   return apiRequest<Project>(API_URL, {
     method: "POST",
-    body: toFormData(payload),
+    body: hasImage ? toFormData(payload) : toJsonBody(payload),
   });
 }
 
@@ -114,9 +153,10 @@ export async function updateProject(
   projectId: number,
   payload: Partial<ProjectPayload>,
 ): Promise<void> {
+  const hasImage = payload.image instanceof File;
   await apiRequest<void>(`${API_URL}/${projectId}`, {
     method: "PUT",
-    body: toFormData(payload),
+    body: hasImage ? toFormData(payload) : toJsonBody(payload),
   });
 }
 
