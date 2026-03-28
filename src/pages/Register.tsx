@@ -2,8 +2,9 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { User } from "../models/user";
 
-export default function Login() {
+export default function Register() {
   const navigate = useNavigate();
+  const [name, setName] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -15,11 +16,20 @@ export default function Login() {
     e.preventDefault();
     setIsSubmitting(true);
     setError("");
+
     try {
-      await User.login(username, password);
-      navigate("/", { replace: true });
-    } catch {
-      setError("Invalid username or password");
+      await User.register(name.trim(), username.trim(), password);
+      navigate("/login", { replace: true });
+    } catch (err) {
+      const status = (err as { status?: number } | null)?.status;
+
+      if (status === 409) {
+        setError("User already exists");
+      } else if (status === 400) {
+        setError("Bad request");
+      } else {
+        setError("Registration failed");
+      }
     } finally {
       setIsSubmitting(false);
     }
@@ -33,7 +43,7 @@ export default function Login() {
             <div className="text-xs uppercase tracking-widest text-cyan-200/90">
               Demo Deck
             </div>
-            <h1 className="mt-2 text-2xl font-bold">Login</h1>
+            <h1 className="mt-2 text-2xl font-bold">Register</h1>
           </div>
 
           <div className="px-6 py-6">
@@ -44,6 +54,20 @@ export default function Login() {
             ) : null}
 
             <form onSubmit={handleSubmit} className="space-y-4">
+              <div>
+                <label htmlFor="name" className="label">
+                  Name
+                </label>
+                <input
+                  id="name"
+                  type="text"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  className="input"
+                  required
+                />
+              </div>
+
               <div>
                 <label htmlFor="username" className="label">
                   Username
@@ -77,13 +101,13 @@ export default function Login() {
                 disabled={isSubmitting}
                 className="btn-primary w-full"
               >
-                {isSubmitting ? "Logging in..." : "Login"}
+                {isSubmitting ? "Creating..." : "Create account"}
               </button>
             </form>
 
             <div className="mt-4 text-sm text-slate-600">
-              <Link to="/register" className="underline hover:text-slate-900">
-                Create an account
+              <Link to="/login" className="underline hover:text-slate-900">
+                Back to login
               </Link>
             </div>
           </div>

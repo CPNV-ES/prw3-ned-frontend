@@ -1,6 +1,7 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
+import Register from "./pages/Register";
 import ProjectsIndex from "./pages/Projects/ProjectsIndex";
 import ProjectDetail from "./pages/Projects/ProjectShow";
 import ProjectForm from "./pages/Projects/ProjectForm";
@@ -16,6 +17,7 @@ function App() {
         </Route>
         <Route element={<GuestRoute />}>
           <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
         </Route>
         <Route element={<ProtectedRoute />}>
           <Route path="/projects" element={<ProjectsIndex />} />
