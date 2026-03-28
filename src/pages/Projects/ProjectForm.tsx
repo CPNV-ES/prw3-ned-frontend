@@ -2,6 +2,7 @@ import type { ChangeEvent, FormEvent } from "react";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { getCurrentUser } from "../../api/auth";
+import { ApiError } from "../../api/client";
 import { createProject, getProject, updateProject } from "../../api/projects";
 
 export default function ProjectForm() {
@@ -93,11 +94,18 @@ export default function ProjectForm() {
       return;
     }
 
-    const isPng =
-      file.type === "image/png" || file.name.toLowerCase().endsWith(".png");
+    const fileName = file.name.toLowerCase();
+    const isAllowedType =
+      file.type === "image/png" ||
+      file.type === "image/jpeg" ||
+      file.type === "image/webp" ||
+      fileName.endsWith(".png") ||
+      fileName.endsWith(".jpg") ||
+      fileName.endsWith(".jpeg") ||
+      fileName.endsWith(".webp");
 
-    if (!isPng) {
-      setError("Only PNG images are allowed.");
+    if (!isAllowedType) {
+      setError("Only JPG, PNG, or WEBP images are allowed.");
       e.target.value = "";
       return;
     }
@@ -139,11 +147,33 @@ export default function ProjectForm() {
         const project = await createProject(payload);
         navigate(`/projects/${project.id}`, { replace: true });
       }
-    } catch {
+    } catch (err) {
+      console.error("Project submit failed:", err);
+      if (err instanceof ApiError) {
+        const body = err.body as unknown;
+        const message =
+          body &&
+          typeof body === "object" &&
+          ("message" in body || "error" in body)
+            ? String(
+                (body as { message?: unknown; error?: unknown }).message ??
+                  (body as { message?: unknown; error?: unknown }).error,
+              )
+            : null;
+
+        setError(
+          message ??
+            (isEditMode
+              ? "The update of the project has failed."
+              : "The creation of the project has failed."),
+        );
+        return;
+      }
+
       setError(
         isEditMode
           ? "The update of the project has failed."
-          : "The cration of the project has failed.",
+          : "The creation of the project has failed.",
       );
     } finally {
       setIsSubmitting(false);
@@ -265,16 +295,16 @@ export default function ProjectForm() {
               <input
                 id="image"
                 type="file"
-                accept=".png,image/png"
+                accept=".png,.jpg,.jpeg,.webp,image/png,image/jpeg,image/webp"
                 onChange={handleImageChange}
                 className="block w-full rounded-xl border border-dashed border-slate-300 bg-white/80 px-3 py-3 text-sm text-slate-900 file:mr-4 file:rounded-lg file:border-0 file:bg-slate-900 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-white hover:file:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-cyan-500"
                 required={!isEditMode && !image}
               />
               <p className="mt-1 text-xs text-slate-500">
                 {imageName
-                  ? `Selected PNG: ${imageName}`
+                  ? `Selected image: ${imageName}`
                   : isEditMode && existingImageUrl
-                    ? "Current image kept until you choose a new PNG."
+                    ? "Current image kept until you choose a new file."
                     : "No file selected."}
               </p>
             </div>
