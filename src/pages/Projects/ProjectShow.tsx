@@ -74,42 +74,29 @@ export default function ProjectDetail() {
         Return
       </button>
 
-      <div className="tech-surface-strong overflow-hidden">
-        <div className="aspect-[16/9] w-full bg-slate-100">
-          <img
-            src={project.image_url}
-            alt={project.title}
-            className="h-full w-full object-cover"
-          />
-        </div>
-
-        <div className="p-6">
+      <div className="terminal-card">
+        <div className="terminal-card-header">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
             <div>
-              <h1 className="text-2xl font-bold text-slate-900">
-                {project.title}
-              </h1>
-              <div className="mt-2 flex flex-wrap items-center gap-2 text-xs text-slate-600">
-                <span className="badge">
-                  {project.author_name
-                    ? `by ${project.author_name}`
-                    : `author #${project.author_id}`}
-                </span>
-                <span className="badge">{project.likes} likes</span>
-                {project.created_at ? (
-                  <span className="badge">
-                    {new Date(project.created_at).toLocaleDateString()}
-                  </span>
-                ) : null}
+              <h1 className="terminal-card-title text-base">{project.title}</h1>
+              <div className="terminal-card-meta">
+                {project.author_name
+                  ? `by ${project.author_name}`
+                  : `author #${project.author_id}`}
+                {project.created_at
+                  ? ` | ${new Date(project.created_at).toLocaleDateString()}`
+                  : null}
               </div>
             </div>
 
             <div className="flex flex-wrap gap-2">
+              <span className="badge-dark">{project.likes} likes</span>
+
               {isAuthor ? (
                 <button
                   type="button"
                   onClick={() => navigate(`/projects/edit/${project.id}`)}
-                  className="btn-warning"
+                  className="inline-flex items-center rounded-xl border border-white/15 bg-white/10 px-3 py-1.5 text-xs font-semibold text-white/90 transition hover:bg-white/15"
                 >
                   Edit
                 </button>
@@ -120,21 +107,34 @@ export default function ProjectDetail() {
                   type="button"
                   onClick={handleLike}
                   disabled={isLiking || currentUser === null}
-                  className="btn-accent"
+                  className="inline-flex items-center rounded-xl border border-white/15 bg-cyan-500/20 px-3 py-1.5 text-xs font-semibold text-cyan-100 transition hover:bg-cyan-500/25 disabled:opacity-60"
                 >
                   {isLiking ? "Updating..." : "Like"}
                 </button>
               )}
             </div>
           </div>
+        </div>
 
+        <div className="aspect-[16/9] w-full bg-slate-100">
+          <img
+            src={project.image_url}
+            alt={project.title}
+            className="h-full w-full object-cover"
+          />
+        </div>
+
+        <div className="p-6">
           <p className="mt-5 text-sm leading-relaxed text-slate-700">
             {project.summary}
           </p>
 
           <div className="mt-5 flex flex-wrap gap-2">
             {project.tags.map((tag) => (
-              <span key={tag} className="badge">
+              <span
+                key={tag}
+                className="inline-flex items-center rounded-full border border-cyan-200/60 bg-cyan-50 px-2.5 py-1 text-xs text-cyan-950"
+              >
                 {tag}
               </span>
             ))}

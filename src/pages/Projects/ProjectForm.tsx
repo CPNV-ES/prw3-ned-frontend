@@ -172,17 +172,14 @@ export default function ProjectForm() {
         Return
       </button>
 
-      <div className="tech-surface-strong overflow-hidden">
-        <div className="border-b border-slate-200 bg-white/70 px-6 py-5">
-          <div className="text-xs uppercase tracking-widest text-slate-500">
+      <div className="terminal-card">
+        <div className="terminal-card-header">
+          <div className="text-xs uppercase tracking-widest text-slate-300">
             {isEditMode ? "Edit" : "Create"}
           </div>
-          <h1 className="mt-1 text-2xl font-bold text-slate-900">
+          <h1 className="mt-1 text-xl font-bold text-white">
             {isEditMode ? "Modify the project" : "Create a new project"}
           </h1>
-          <p className="mt-1 text-xs text-slate-600">
-            Fields marked as required must be provided.
-          </p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4 p-6">

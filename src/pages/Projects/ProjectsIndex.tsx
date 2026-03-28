@@ -239,8 +239,24 @@ export default function ProjectsIndex() {
                 return (
                   <div
                     key={project.id}
-                    className="tech-surface overflow-hidden transition hover:border-slate-300 hover:shadow-md"
+                    className="terminal-card transition hover:border-slate-300 hover:shadow-md"
                   >
+                    <div className="terminal-card-header">
+                      <div className="flex items-start justify-between gap-3">
+                        <h2 className="terminal-card-title">{project.title}</h2>
+                        <span className="badge-dark">
+                          {project.likes} likes
+                        </span>
+                      </div>
+
+                      <div className="terminal-card-meta">
+                        {project.author_name
+                          ? `by ${project.author_name}`
+                          : `author #${project.author_id}`}
+                        {createdLabel ? ` | ${createdLabel}` : null}
+                      </div>
+                    </div>
+
                     <div className="aspect-[16/9] w-full bg-slate-100">
                       <img
                         src={project.image_url}
@@ -251,20 +267,16 @@ export default function ProjectsIndex() {
                     </div>
 
                     <div className="p-4">
-                      <div className="flex items-start justify-between gap-3">
-                        <h2 className="text-base font-bold text-slate-900">
-                          {project.title}
-                        </h2>
-                        <span className="badge">{project.likes} likes</span>
-                      </div>
-
                       <p className="mt-2 line-clamp-3 text-sm text-slate-700">
                         {project.summary}
                       </p>
 
                       <div className="mt-3 flex flex-wrap gap-2">
                         {project.tags.slice(0, 6).map((tag) => (
-                          <span key={tag} className="badge">
+                          <span
+                            key={tag}
+                            className="inline-flex items-center rounded-full border border-cyan-200/60 bg-cyan-50 px-2.5 py-1 text-xs text-cyan-950"
+                          >
                             {tag}
                           </span>
                         ))}
@@ -275,20 +287,11 @@ export default function ProjectsIndex() {
                         ) : null}
                       </div>
 
-                      <div className="mt-3 flex items-center justify-between text-xs text-slate-500">
-                        <span>
-                          {project.author_name
-                            ? `by ${project.author_name}`
-                            : `author #${project.author_id}`}
-                        </span>
-                        {createdLabel ? <span>{createdLabel}</span> : null}
-                      </div>
-
                       <div className="mt-4 flex flex-wrap gap-2">
                         <button
                           type="button"
                           onClick={() => handleView(project.id)}
-                          className="btn-accent"
+                          className="btn-accent px-3 py-1.5 text-xs"
                         >
                           Details
                         </button>
@@ -297,7 +300,7 @@ export default function ProjectsIndex() {
                           <button
                             type="button"
                             onClick={() => handleEdit(project.id)}
-                            className="btn-warning"
+                            className="btn-warning px-3 py-1.5 text-xs"
                           >
                             Edit
                           </button>
@@ -307,7 +310,7 @@ export default function ProjectsIndex() {
                           <button
                             type="button"
                             onClick={() => handleDelete(project.id)}
-                            className="btn-danger"
+                            className="btn-danger px-3 py-1.5 text-xs"
                           >
                             Delete
                           </button>
