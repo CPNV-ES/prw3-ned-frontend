@@ -5,6 +5,7 @@ import Register from "./pages/Register";
 import ProjectsIndex from "./pages/Projects/ProjectsIndex";
 import ProjectDetail from "./pages/Projects/ProjectShow";
 import ProjectForm from "./pages/Projects/ProjectForm";
+import UserShow from "./pages/Users/UserShow";
 import NotFound from "./pages/NotFound";
 import { GuestRoute, ProtectedRoute } from "./routes/AuthGuards";
 
@@ -24,6 +25,7 @@ function App() {
           <Route path="/projects/create" element={<ProjectForm />} />
           <Route path="/projects/edit/:id" element={<ProjectForm />} />
           <Route path="/projects/:id" element={<ProjectDetail />} />
+          <Route path="/users/:id" element={<UserShow />} />
         </Route>
         <Route path="*" element={<NotFound />} />
       </Routes>
