@@ -42,14 +42,14 @@ export default function ProjectCard({
             <button
               type="button"
               onClick={() => onAuthorClick(project.author_id)}
-              className="font-semibold text-slate-700 underline decoration-slate-300 underline-offset-2 transition hover:text-slate-900 hover:decoration-slate-400"
+              className="font-semibold text-white underline decoration-white/40 underline-offset-2 transition hover:text-white/90 hover:decoration-white/70"
             >
               {project.author_name
                 ? project.author_name
                 : `author #${project.author_id}`}
             </button>
           ) : (
-            <span className="font-semibold text-slate-700">
+            <span className="font-semibold text-white">
               {project.author_name
                 ? project.author_name
                 : `author #${project.author_id}`}
