@@ -13,6 +13,7 @@ export default function ProjectsIndex() {
   const [currentUser, setCurrentUser] = useState<AuthUser | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [deletingId, setDeletingId] = useState<number | null>(null);
 
   const [nameQuery, setNameQuery] = useState("");
   const [tagsQuery, setTagsQuery] = useState("");
@@ -97,13 +98,40 @@ export default function ProjectsIndex() {
   };
 
   const handleDelete = async (id: number) => {
+    const project = projects.find((p) => p.id === id);
+    if (!project) {
+      return;
+    }
+
+    if (!currentUser) {
+      setError("You must be logged in to delete a project.");
+      return;
+    }
+
+    if (currentUser.id !== project.author_id) {
+      setError("You cannot delete a project you do not own.");
+      return;
+    }
+
+    const isConfirmed = window.confirm(
+      `Delete "${project.title}"? This action cannot be undone.`,
+    );
+    if (!isConfirmed) {
+      return;
+    }
+
     try {
+      setError("");
+      setDeletingId(id);
       await deleteProject(id);
       setProjects((currentProjects) =>
         currentProjects.filter((p) => p.id !== id),
       );
     } catch (error) {
       console.error("Error during the deleting of the project :", error);
+      setError("Unable to delete this project.");
+    } finally {
+      setDeletingId((current) => (current === id ? null : current));
     }
   };
 
@@ -312,9 +340,12 @@ export default function ProjectsIndex() {
                           <button
                             type="button"
                             onClick={() => handleDelete(project.id)}
-                            className="btn-danger px-3 py-1.5 text-xs"
+                            disabled={deletingId === project.id}
+                            className="btn-danger px-3 py-1.5 text-xs disabled:cursor-not-allowed disabled:opacity-60"
                           >
-                            Delete
+                            {deletingId === project.id
+                              ? "Deleting..."
+                              : "Delete"}
                           </button>
                         ) : null}
                       </div>
