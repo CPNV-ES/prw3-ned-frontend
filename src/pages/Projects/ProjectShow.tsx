@@ -3,7 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { Project } from "../../models/project";
 import { User } from "../../models/user";
 
-export default function DetailProject() {
+export default function ProjectDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
   const projectId = Number(id);
@@ -62,9 +62,7 @@ export default function DetailProject() {
     return <div className="p-6">Project not found</div>;
   }
 
-  const isAuthor = currentUser?.id === project.authorId;
-  const hasLiked =
-    currentUser !== null && project.likedBy?.includes(currentUser.id) === true;
+  const isAuthor = currentUser?.id === project.author_id;
 
   return (
     <div className="p-6 max-w-3xl mx-auto">
@@ -79,7 +77,7 @@ export default function DetailProject() {
         <h1 className="text-2xl font-bold mb-4">{project.title}</h1>
 
         <img
-          src={project.image}
+          src={project.image_url}
           alt={project.title}
           className="w-full h-60 object-cover rounded-xl mb-4"
         />
@@ -88,7 +86,7 @@ export default function DetailProject() {
 
         <div className="mb-4">
           <strong>Author :</strong>{" "}
-          {project.authorUsername ?? `#${project.authorId}`}
+          {project.author_name ?? `#${project.author_id}`}
         </div>
 
         <div className="mb-4">
@@ -96,7 +94,7 @@ export default function DetailProject() {
         </div>
 
         <div className="mb-4">
-          <strong>Likes :</strong> {project.like}
+          <strong>Likes :</strong> {project.likes}
         </div>
 
         {error ? <p className="mb-4 text-sm text-red-600">{error}</p> : null}
@@ -111,14 +109,12 @@ export default function DetailProject() {
             >
               {isLiking
                 ? "Updating..."
-                : hasLiked
-                  ? "Remove the like"
-                  : "Like the project"}
+                : "Like the project"}
             </button>
           )}
 
           <a
-            href={project.urlDemo}
+            href={project.demo_url}
             target="_blank"
             rel="noreferrer"
             className="bg-green-500 text-white px-4 py-2 rounded-xl hover:bg-green-600"
@@ -127,7 +123,7 @@ export default function DetailProject() {
           </a>
 
           <a
-            href={project.urlRep}
+            href={project.repository_url}
             target="_blank"
             rel="noreferrer"
             className="bg-gray-800 text-white px-4 py-2 rounded-xl hover:bg-gray-900"

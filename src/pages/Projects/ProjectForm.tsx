@@ -10,11 +10,10 @@ export default function ProjectForm() {
   const projectId = id ? Number(id) : null;
   const isEditMode = projectId !== null && !Number.isNaN(projectId);
   const [title, setTitle] = useState("");
-  const [authorId, setAuthorId] = useState("");
-  const [authorUsername, setAuthorUsername] = useState("");
-  const [urlDemo, setUrlDemo] = useState("");
-  const [urlRep, setUrlRep] = useState("");
-  const [image, setImage] = useState("");
+  const [demoUrl, setDemoUrl] = useState("");
+  const [repositoryUrl, setRepositoryUrl] = useState("");
+  const [image, setImage] = useState<File | null>(null);
+  const [existingImageUrl, setExistingImageUrl] = useState("");
   const [imageName, setImageName] = useState("");
   const [tags, setTags] = useState("");
   const [summary, setSummary] = useState("");
@@ -41,7 +40,7 @@ export default function ProjectForm() {
             return;
           }
 
-          if (!currentUser || currentUser.id !== project.authorId) {
+          if (!currentUser || currentUser.id !== project.author_id) {
             if (!isCancelled) {
               setError("Only the author can modify this project.");
               setIsAuthorized(false);
@@ -53,11 +52,10 @@ export default function ProjectForm() {
           if (!isCancelled) {
             setIsAuthorized(true);
             setTitle(project.title);
-            setAuthorId(String(project.authorId));
-            setAuthorUsername(currentUser.username);
-            setUrlDemo(project.urlDemo);
-            setUrlRep(project.urlRep);
-            setImage(project.image);
+            setDemoUrl(project.demo_url);
+            setRepositoryUrl(project.repository_url);
+            setExistingImageUrl(project.image_url ?? "");
+            setImage(null);
             setTags(project.tags.join(", "));
             setSummary(project.summary);
             setIsLoading(false);
@@ -66,8 +64,6 @@ export default function ProjectForm() {
         }
 
         if (!isCancelled && currentUser) {
-          setAuthorId(String(currentUser.id));
-          setAuthorUsername(currentUser.username);
           setIsAuthorized(true);
         }
       } catch {
@@ -106,21 +102,9 @@ export default function ProjectForm() {
       return;
     }
 
-    try {
-      const fileContent = await new Promise<string>((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = () => resolve(String(reader.result ?? ""));
-        reader.onerror = () => reject(new Error("Image read failed"));
-        reader.readAsDataURL(file);
-      });
-
-      setImage(fileContent);
-      setImageName(file.name);
-      setError("");
-    } catch {
-      setError("The image could not be loaded.");
-      e.target.value = "";
-    }
+    setImage(file);
+    setImageName(file.name);
+    setError("");
   };
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>): Promise<void> => {
@@ -133,17 +117,20 @@ export default function ProjectForm() {
       }
 
       const payload = {
-        title,
-        summary,
-        urlDemo,
-        urlRep,
-        image,
-        authorId: Number(authorId),
+        title: title,
+        summary: summary,
+        demo_url: demoUrl,
+        repository_url: repositoryUrl,
+        image: image ?? undefined,
         tags: tags
           .split(",")
           .map((tag) => tag.trim())
           .filter(Boolean),
       };
+
+      if (!isEditMode && !image) {
+        throw new Error("Image is required for project creation");
+      }
 
       if (isEditMode && projectId !== null) {
         await Project.update(projectId, payload);
@@ -221,23 +208,6 @@ export default function ProjectForm() {
 
         <div>
           <label
-            htmlFor="authorUsername"
-            className="block text-sm font-medium text-gray-700 mb-1"
-          >
-            Author
-          </label>
-          <input
-            id="authorUsername"
-            type="text"
-            value={authorUsername}
-            readOnly
-            className="w-full cursor-not-allowed bg-gray-100 px-4 py-2 border border-gray-300 rounded-lg text-gray-600 focus:outline-none"
-            required
-          />
-        </div>
-
-        <div>
-          <label
             htmlFor="urlDemo"
             className="block text-sm font-medium text-gray-700 mb-1"
           >
@@ -246,8 +216,8 @@ export default function ProjectForm() {
           <input
             id="urlDemo"
             type="url"
-            value={urlDemo}
-            onChange={(e) => setUrlDemo(e.target.value)}
+            value={demoUrl}
+            onChange={(e) => setDemoUrl(e.target.value)}
             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             required
           />
@@ -263,8 +233,8 @@ export default function ProjectForm() {
           <input
             id="urlRep"
             type="url"
-            value={urlRep}
-            onChange={(e) => setUrlRep(e.target.value)}
+            value={repositoryUrl}
+            onChange={(e) => setRepositoryUrl(e.target.value)}
             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             required
           />
@@ -288,7 +258,7 @@ export default function ProjectForm() {
           <p className="mt-1 text-sm text-blue-800">
             {imageName
               ? `Selected PNG: ${imageName}`
-              : isEditMode && image
+              : isEditMode && existingImageUrl
                 ? "Current image kept until you choose a new PNG."
                 : "No file selected."}
           </p>
