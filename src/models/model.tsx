@@ -4,16 +4,20 @@ export class Model {
     url: string,
     body?: unknown,
   ): Promise<Response> {
-    const headers: Record<string, string> = {
-      "Content-Type": "application/json",
-    };
+    const headers: Record<string, string> = {};
     if (localStorage.getItem("token")) {
-      headers["Authorization"] = `${localStorage.getItem("token")}`;
+      headers["Authorization"] = `Bearer ${localStorage.getItem("token")}`;
     }
+
+    const isFormData = body instanceof FormData;
+    if (!isFormData) {
+      headers["Content-Type"] = "application/json";
+    }
+
     const response = await fetch(url, {
       method: method,
       headers: headers,
-      body: body ? JSON.stringify(body) : undefined,
+      body: body ? (isFormData ? body : JSON.stringify(body)) : undefined,
     });
     return response;
   }

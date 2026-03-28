@@ -34,7 +34,6 @@ export class User extends Model {
 
     const data = await response.json();
     localStorage.setItem("token", data.token);
-    console.log("Login successful, token stored:", data.token);
     return new User(data.user.id, data.user.username, data.user.name);
   }
 
