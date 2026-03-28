@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Navigate, Outlet, useLocation } from "react-router-dom";
-import { User } from "../models/user";
+import { getCurrentUser } from "../api/auth";
 import Header from "../components/Header";
 
 type AuthStatus = "loading" | "authenticated" | "unauthenticated";
@@ -13,7 +13,7 @@ function useAuthStatus(): AuthStatus {
     let isCancelled = false;
 
     const checkSession = async () => {
-      const currentUser = await User.current();
+      const currentUser = await getCurrentUser();
       if (!isCancelled) {
         setStatus(currentUser ? "authenticated" : "unauthenticated");
       }

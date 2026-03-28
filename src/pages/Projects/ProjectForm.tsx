@@ -1,8 +1,8 @@
 import type { ChangeEvent, FormEvent } from "react";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { Project } from "../../models/project";
-import { User } from "../../models/user";
+import { getCurrentUser } from "../../api/auth";
+import { createProject, getProject, updateProject } from "../../api/projects";
 
 export default function ProjectForm() {
   const navigate = useNavigate();
@@ -27,10 +27,10 @@ export default function ProjectForm() {
 
     async function loadForm(): Promise<void> {
       try {
-        const currentUser = await User.current();
+        const currentUser = await getCurrentUser();
 
         if (isEditMode && projectId !== null) {
-          const project = await Project.getCurrent(projectId);
+          const project = await getProject(projectId);
 
           if (!project) {
             if (!isCancelled) {
@@ -133,10 +133,10 @@ export default function ProjectForm() {
       }
 
       if (isEditMode && projectId !== null) {
-        await Project.update(projectId, payload);
+        await updateProject(projectId, payload);
         navigate(`/projects/${projectId}`, { replace: true });
       } else {
-        const project = await Project.create(payload);
+        const project = await createProject(payload);
         navigate(`/projects/${project.id}`, { replace: true });
       }
     } catch {

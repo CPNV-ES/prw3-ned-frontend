@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { Project } from "../../models/project";
-import { User } from "../../models/user";
+import type { AuthUser } from "../../api/auth";
+import { getCurrentUser } from "../../api/auth";
+import type { Project } from "../../api/projects";
+import { getProject, likeProject } from "../../api/projects";
 
 export default function ProjectDetail() {
   const { id } = useParams();
@@ -9,7 +11,7 @@ export default function ProjectDetail() {
   const projectId = Number(id);
 
   const [project, setProject] = useState<Project | null>(null);
-  const [currentUser, setCurrentUser] = useState<User | null>(null);
+  const [currentUser, setCurrentUser] = useState<AuthUser | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [isLiking, setIsLiking] = useState(false);
@@ -17,9 +19,14 @@ export default function ProjectDetail() {
   useEffect(() => {
     async function fetchProject() {
       try {
+        if (Number.isNaN(projectId)) {
+          setProject(null);
+          return;
+        }
+
         const [data, user] = await Promise.all([
-          Project.getCurrent(projectId),
-          User.current(),
+          getProject(projectId),
+          getCurrentUser(),
         ]);
         setProject(data);
         setCurrentUser(user);
@@ -44,7 +51,7 @@ export default function ProjectDetail() {
     setError("");
 
     try {
-      const updatedProject = await Project.liked(project.id, currentUser);
+      const updatedProject = await likeProject(project.id, currentUser.id);
       setProject(updatedProject);
     } catch (likeError) {
       console.error("Erreur ajout du like:", likeError);

@@ -1,14 +1,16 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import { Project } from "../../models/project";
-import { User } from "../../models/user";
+import type { AuthUser } from "../../api/auth";
+import { getCurrentUser } from "../../api/auth";
+import type { Project } from "../../api/projects";
+import { deleteProject, listProjects } from "../../api/projects";
 
 type SortOption = "date-desc" | "date-asc" | "likes-desc" | "likes-asc";
 
 export default function ProjectsIndex() {
   const [projects, setProjects] = useState<Project[]>([]);
-  const [currentUser, setCurrentUser] = useState<User | null>(null);
+  const [currentUser, setCurrentUser] = useState<AuthUser | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
@@ -26,7 +28,7 @@ export default function ProjectsIndex() {
 
     async function fetchCurrentUser() {
       try {
-        const user = await User.current();
+        const user = await getCurrentUser();
         if (!isCancelled) {
           setCurrentUser(user);
         }
@@ -61,7 +63,7 @@ export default function ProjectsIndex() {
       ];
 
       try {
-        const allProjects = await Project.getAll({
+        const allProjects = await listProjects({
           name: trimmedName ? trimmedName : undefined,
           tags: tags.length > 0 ? tags : undefined,
           sortBy,
@@ -96,7 +98,7 @@ export default function ProjectsIndex() {
 
   const handleDelete = async (id: number) => {
     try {
-      await Project.delete(id);
+      await deleteProject(id);
       setProjects((currentProjects) =>
         currentProjects.filter((p) => p.id !== id),
       );

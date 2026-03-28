@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { User } from "../models/user";
+import { logout } from "../api/auth";
 
 export default function Header() {
   const navigate = useNavigate();
@@ -9,7 +9,7 @@ export default function Header() {
   const handleLogout = async (): Promise<void> => {
     setIsLoggingOut(true);
     try {
-      await User.logout();
+      await logout();
       navigate("/login", { replace: true });
     } catch (error) {
       console.error("Logout failed", error);

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { User } from "../models/user";
+import { login } from "../api/auth";
+import AuthCard from "../components/AuthCard";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -16,7 +17,7 @@ export default function Login() {
     setIsSubmitting(true);
     setError("");
     try {
-      await User.login(username, password);
+      await login(username, password);
       navigate("/", { replace: true });
     } catch {
       setError("Invalid username or password");
@@ -26,69 +27,56 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4">
-      <div className="w-full max-w-md">
-        <div className="tech-surface-strong overflow-hidden">
-          <div className="border-b border-slate-200 bg-gradient-to-r from-slate-950 via-slate-900 to-slate-950 px-6 py-5 text-white">
-            <div className="text-xs uppercase tracking-widest text-cyan-200/90">
-              Demo Deck
-            </div>
-            <h1 className="mt-2 text-2xl font-bold">Login</h1>
-          </div>
-
-          <div className="px-6 py-6">
-            {error ? (
-              <div className="mb-4 rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">
-                {error}
-              </div>
-            ) : null}
-
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div>
-                <label htmlFor="username" className="label">
-                  Username
-                </label>
-                <input
-                  id="username"
-                  type="text"
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
-                  className="input"
-                  required
-                />
-              </div>
-
-              <div>
-                <label htmlFor="password" className="label">
-                  Password
-                </label>
-                <input
-                  id="password"
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="input"
-                  required
-                />
-              </div>
-
-              <button
-                type="submit"
-                disabled={isSubmitting}
-                className="btn-primary w-full"
-              >
-                {isSubmitting ? "Logging in..." : "Login"}
-              </button>
-            </form>
-
-            <div className="mt-4 text-sm text-slate-600">
-              <Link to="/register" className="underline hover:text-slate-900">
-                Create an account
-              </Link>
-            </div>
-          </div>
+    <AuthCard title="Login">
+      {error ? (
+        <div className="mb-4 rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">
+          {error}
         </div>
+      ) : null}
+
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <div>
+          <label htmlFor="username" className="label">
+            Username
+          </label>
+          <input
+            id="username"
+            type="text"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            className="input"
+            required
+          />
+        </div>
+
+        <div>
+          <label htmlFor="password" className="label">
+            Password
+          </label>
+          <input
+            id="password"
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className="input"
+            required
+          />
+        </div>
+
+        <button
+          type="submit"
+          disabled={isSubmitting}
+          className="btn-primary w-full"
+        >
+          {isSubmitting ? "Logging in..." : "Login"}
+        </button>
+      </form>
+
+      <div className="mt-4 text-sm text-slate-600">
+        <Link to="/register" className="underline hover:text-slate-900">
+          Create an account
+        </Link>
       </div>
-    </div>
+    </AuthCard>
   );
 }
