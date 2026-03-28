@@ -3,45 +3,98 @@ import type { User } from "./user";
 
 const API_URL = "/api/projects";
 
+export type ProjectQuery = {
+  name?: string;
+  tags?: string[];
+  sortBy?: "date" | "likes";
+  order?: "asc" | "desc";
+};
+
 export type ProjectPayload = {
   title: string;
   summary: string;
-  urlDemo: string;
-  urlRep: string;
-  image: string;
-  authorId: number;
-  like?: number;
+  demo_url: string;
+  repository_url: string;
+  image?: File;
   tags: string[];
-  isActive?: boolean;
 };
 
-type ProjectResponse = ProjectPayload & {
+type ProjectResponse = Omit<ProjectPayload, "image"> & {
   id?: number;
-  authorUsername?: string;
-  likedBy?: number[];
+  likes?: number;
+  author_id: number;
+  author_name?: string;
+  image_url?: string;
+  created_at?: string;
 };
 
 export class Project extends Model {
   id!: number;
-  authorUsername?: string;
-  likedBy?: number[];
   title!: string;
   summary!: string;
-  urlDemo!: string;
-  urlRep!: string;
-  image!: string;
-  authorId!: number;
-  like!: number;
+  demo_url!: string;
+  repository_url!: string;
+  image_url!: string;
+  author_id!: number;
+  author_name!: string;
+  likes!: number;
   tags!: string[];
-  isActive!: boolean;
+  created_at!: string;
 
   constructor(data: ProjectResponse) {
     super();
     Object.assign(this, data);
   }
 
-  static async getAll(): Promise<Project[]> {
-    const res = await this.send_request("GET", API_URL);
+  private static toFormData(project: Partial<ProjectPayload>): FormData {
+    const formData = new FormData();
+
+    if (project.title !== undefined) {
+      formData.append("title", project.title);
+    }
+    if (project.summary !== undefined) {
+      formData.append("summary", project.summary);
+    }
+    if (project.demo_url !== undefined) {
+      formData.append("demo_url", project.demo_url);
+    }
+    if (project.repository_url !== undefined) {
+      formData.append("repository_url", project.repository_url);
+    }
+    if (Array.isArray(project.tags)) {
+      formData.append("tags", JSON.stringify(project.tags));
+    }
+    if (project.image instanceof File) {
+      formData.append("image", project.image);
+    }
+
+    return formData;
+  }
+
+  static async getAll(query: ProjectQuery = {}): Promise<Project[]> {
+    const params = new URLSearchParams();
+
+    if (query.name && query.name.trim()) {
+      params.set("name", query.name.trim());
+    }
+
+    if (Array.isArray(query.tags) && query.tags.length > 0) {
+      const tags = query.tags.map((tag) => tag.trim()).filter(Boolean);
+      if (tags.length > 0) {
+        params.set("tags", tags.join(","));
+      }
+    }
+
+    if (query.sortBy) {
+      params.set("sortBy", query.sortBy);
+    }
+
+    if (query.order) {
+      params.set("order", query.order);
+    }
+
+    const url = params.toString() ? `${API_URL}?${params.toString()}` : API_URL;
+    const res = await this.send_request("GET", url);
 
     if (!res.ok) {
       throw new Error("Project fetch failed");
@@ -59,7 +112,11 @@ export class Project extends Model {
   }
 
   static async create(project: ProjectPayload): Promise<Project> {
-    const response = await this.send_request("POST", API_URL, project);
+    const response = await this.send_request(
+      "POST",
+      API_URL,
+      this.toFormData(project),
+    );
 
     if (!response.ok) {
       throw new Error("Project creation failed");
@@ -71,12 +128,12 @@ export class Project extends Model {
 
   static async update(
     projectId: number,
-    project: Partial<Project>,
+    project: Partial<ProjectPayload>,
   ): Promise<void> {
     const response = await this.send_request(
-      "PATCH",
+      "PUT",
       `${API_URL}/${projectId}`,
-      project,
+      this.toFormData(project),
     );
 
     if (!response.ok) {
