@@ -56,38 +56,17 @@ npm run format
 npm run check:format
 ```
 
-### On integration environment
-
-Not yet implemented
-
 ## Directory Structure
 
 ```shell
 ├───public
-|       vite.svg
 └───src
-    │   App.tsx
-    │   index.css
-    │   main.tsx
     ├───assets
-    │       react.svg
     ├───components
-    │       Header.tsx
     ├───models
-    │       model.tsx
-    │       project.tsx
-    │       user.tsx
     ├───pages
-    │   │   Home.tsx
-    │   │   Login.tsx
-    │   │   NotFound.tsx
-    │   │
     │   └───Project
-    │           ActiveProjects.tsx
-    │           DetailProject.tsx
-    │           ProjectForm.tsx
     └───routes
-            AuthGuards.tsx
 ```
 
 ## Collaboration
