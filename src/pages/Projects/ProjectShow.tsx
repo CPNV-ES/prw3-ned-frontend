@@ -217,7 +217,7 @@ export default function ProjectDetail() {
           </div>
         </div>
 
-        <div className="aspect-[16/9] w-full bg-slate-100">
+        <div className="aspect-video w-full bg-slate-100">
           <img
             src={project.image_url}
             alt={project.title}
@@ -258,7 +258,7 @@ export default function ProjectDetail() {
                 id="comment"
                 value={commentDraft}
                 onChange={(e) => setCommentDraft(e.target.value)}
-                className="input min-h-[96px] resize-y"
+                className="input min-h-24 resize-y"
                 placeholder={
                   currentUser
                     ? "Write something helpful..."
