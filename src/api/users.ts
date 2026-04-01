@@ -1,4 +1,5 @@
 import { apiRequest, ApiError } from "./client";
+import type { Project } from "./projects";
 
 export type User = {
   id: number;
@@ -33,4 +34,10 @@ export async function getUser(userId: number): Promise<User | null> {
     }
     throw err;
   }
+}
+
+export async function listUserProjects(userId: number): Promise<Project[]> {
+  return apiRequest<Project[]>(`/api/users/${userId}/projects`, {
+    method: "GET",
+  });
 }

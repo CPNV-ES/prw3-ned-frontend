@@ -4,9 +4,9 @@ import { useNavigate, useParams } from "react-router-dom";
 import type { AuthUser } from "../../api/auth";
 import { getCurrentUser } from "../../api/auth";
 import type { Project } from "../../api/projects";
-import { deleteProject, listProjects } from "../../api/projects";
+import { deleteProject } from "../../api/projects";
 import type { User } from "../../api/users";
-import { getUser } from "../../api/users";
+import { getUser, listUserProjects } from "../../api/users";
 import ProjectCard from "../../components/ProjectCard";
 
 export default function UserShow() {
@@ -38,9 +38,9 @@ export default function UserShow() {
       }
 
       try {
-        const [userResult, allProjects, sessionUser] = await Promise.all([
+        const [userResult, userProjects, sessionUser] = await Promise.all([
           getUser(userId),
-          listProjects({ sortBy: "date", order: "desc" }),
+          listUserProjects(userId),
           getCurrentUser(),
         ]);
 
@@ -49,9 +49,7 @@ export default function UserShow() {
         }
 
         setUser(userResult);
-        setProjects(
-          allProjects.filter((project) => project.author_id === userId),
-        );
+        setProjects(userProjects);
         setCurrentUser(sessionUser);
         setActionError("");
       } catch (err) {
