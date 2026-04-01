@@ -1,5 +1,4 @@
 import { apiRequest, ApiError } from "./client";
-import { clearAuthToken, setAuthToken } from "../lib/authToken";
 
 export type AuthUser = {
   id: number;
@@ -8,7 +7,6 @@ export type AuthUser = {
 };
 
 type SessionResponse = {
-  token: string;
   expiresAt: string;
   user: AuthUser;
 };
@@ -26,16 +24,11 @@ export async function login(
     method: "POST",
     body: { username, password },
   });
-  setAuthToken(data.token);
   return data.user;
 }
 
 export async function logout(): Promise<void> {
-  try {
-    await apiRequest<void>("/api/sessions", { method: "DELETE" });
-  } finally {
-    clearAuthToken();
-  }
+  await apiRequest<void>("/api/sessions", { method: "DELETE" });
 }
 
 export async function getCurrentUser(): Promise<AuthUser | null> {

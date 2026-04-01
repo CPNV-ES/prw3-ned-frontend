@@ -1,5 +1,3 @@
-import { clearAuthToken, getAuthToken } from "../lib/authToken";
-
 export class ApiError extends Error {
   status: number;
   body: unknown;
@@ -40,11 +38,7 @@ export async function apiRequest<T>(
 ): Promise<T> {
   const { method = "GET", body, signal, headers = {} } = options;
 
-  const token = getAuthToken();
   const requestHeaders: Record<string, string> = { ...headers };
-  if (token) {
-    requestHeaders.Authorization = `Bearer ${token}`;
-  }
 
   const isFormData = body instanceof FormData;
   if (body !== undefined && !isFormData) {
@@ -54,6 +48,7 @@ export async function apiRequest<T>(
   const response = await fetch(url, {
     method,
     headers: requestHeaders,
+    credentials: "include",
     body:
       body === undefined ? undefined : isFormData ? body : JSON.stringify(body),
     signal,
@@ -61,9 +56,6 @@ export async function apiRequest<T>(
 
   if (!response.ok) {
     const errorBody = await parseJsonSafely(response);
-    if (response.status === 401) {
-      clearAuthToken();
-    }
     throw new ApiError("Request failed", response.status, errorBody);
   }
 
