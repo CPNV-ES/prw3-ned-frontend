@@ -56,10 +56,6 @@ npm run format
 npm run check:format
 ```
 
-### On integration environment
-
-Not yet implemented
-
 ## Directory Structure
 
 ```shell
