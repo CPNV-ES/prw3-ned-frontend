@@ -63,31 +63,15 @@ Not yet implemented
 ## Directory Structure
 
 ```shell
-├───public
-|       vite.svg
-└───src
-    │   App.tsx
-    │   index.css
-    │   main.tsx
-    ├───assets
-    │       react.svg
-    ├───components
-    │       Header.tsx
-    ├───models
-    │       model.tsx
-    │       project.tsx
-    │       user.tsx
-    ├───pages
-    │   │   Home.tsx
-    │   │   Login.tsx
-    │   │   NotFound.tsx
-    │   │
-    │   └───Project
-    │           ActiveProjects.tsx
-    │           DetailProject.tsx
-    │           ProjectForm.tsx
-    └───routes
-            AuthGuards.tsx
+├── public                 # public files (favicon, ect...)
+└── src
+    ├── api                # API calls
+    ├── assets             # static assets (images, fonts, etc.)
+    ├── components         # reusable components
+    ├── pages              # pages of the application
+    │   ├── Projects       # pages related to projects
+    │   └── Users          # pages of the application
+    └── routes             # routes of the application
 ```
 
 ## Collaboration
