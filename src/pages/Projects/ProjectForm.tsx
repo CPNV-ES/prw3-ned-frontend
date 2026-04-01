@@ -41,7 +41,7 @@ export default function ProjectForm() {
             return;
           }
 
-          if (!currentUser || currentUser.id !== project.author_id) {
+          if (!currentUser || currentUser.id !== project.author.id) {
             if (!isCancelled) {
               setError("Only the author can modify this project.");
               setIsAuthorized(false);

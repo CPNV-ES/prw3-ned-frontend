@@ -11,8 +11,10 @@ export type Project = {
   image_url: string;
   likes: number;
   created_at: string;
-  author_id: number;
-  author_name?: string;
+  author: {
+    id: number;
+    name: string;
+  };
   tags: string[];
 };
 
@@ -20,8 +22,11 @@ export type Comment = {
   id: number;
   content: string;
   created_at: string;
-  author_id: number;
   project_id: number;
+  author: {
+    id: number;
+    name: string;
+  };
 };
 
 export type ProjectQuery = {

@@ -109,7 +109,7 @@ export default function ProjectsIndex() {
       return;
     }
 
-    if (currentUser.id !== project.author_id) {
+    if (currentUser.id !== project.author.id) {
       setError("You cannot delete a project you do not own.");
       return;
     }
@@ -266,7 +266,7 @@ export default function ProjectsIndex() {
           {projects.length > 0 ? (
             <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {projects.map((project) => {
-                const isAuthor = currentUser?.id === project.author_id;
+                const isAuthor = currentUser?.id === project.author.id;
                 return (
                   <ProjectCard
                     key={project.id}

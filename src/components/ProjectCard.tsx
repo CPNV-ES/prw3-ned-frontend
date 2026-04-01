@@ -21,6 +21,8 @@ export default function ProjectCard({
   isAuthor = false,
   isDeleting = false,
 }: Props) {
+  const authorName = project.author?.name ?? `author #${project.author.id}`;
+
   const resolvedCreatedLabel =
     createdLabel !== undefined
       ? createdLabel
@@ -41,25 +43,19 @@ export default function ProjectCard({
           {onAuthorClick ? (
             <button
               type="button"
-              onClick={() => onAuthorClick(project.author_id)}
+              onClick={() => onAuthorClick(project.author.id)}
               className="font-semibold text-white underline decoration-white/40 underline-offset-2 transition hover:text-white/90 hover:decoration-white/70"
             >
-              {project.author_name
-                ? project.author_name
-                : `author #${project.author_id}`}
+              {authorName}
             </button>
           ) : (
-            <span className="font-semibold text-white">
-              {project.author_name
-                ? project.author_name
-                : `author #${project.author_id}`}
-            </span>
+            <span className="font-semibold text-white">{authorName}</span>
           )}
           {resolvedCreatedLabel ? ` | ${resolvedCreatedLabel}` : null}
         </div>
       </div>
 
-      <div className="aspect-[16/9] w-full bg-slate-100">
+      <div className="aspect-video w-full bg-slate-100">
         <img
           src={project.image_url}
           alt={project.title}

@@ -59,14 +59,15 @@ npm run check:format
 ## Directory Structure
 
 ```shell
-├───public
-└───src
-    ├───assets
-    ├───components
-    ├───models
-    ├───pages
-    │   └───Project
-    └───routes
+├── public                 # public files (favicon, ect...)
+└── src
+    ├── api                # API calls
+    ├── assets             # static assets (images, fonts, etc.)
+    ├── components         # reusable components
+    ├── pages              # pages of the application
+    │   ├── Projects       # pages related to projects
+    │   └── Users          # pages of the application
+    └── routes             # routes of the application
 ```
 
 ## Collaboration
