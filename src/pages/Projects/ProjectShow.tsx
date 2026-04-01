@@ -9,7 +9,6 @@ import {
   likeProject,
   listProjectComments,
 } from "../../api/projects";
-import { listUsers } from "../../api/users";
 
 export default function ProjectDetail() {
   const { id } = useParams();
@@ -27,9 +26,6 @@ export default function ProjectDetail() {
   const [commentsError, setCommentsError] = useState("");
   const [commentDraft, setCommentDraft] = useState("");
   const [isCommenting, setIsCommenting] = useState(false);
-  const [userNamesById, setUserNamesById] = useState<Record<number, string>>(
-    {},
-  );
 
   useEffect(() => {
     async function fetchProject() {
@@ -43,12 +39,11 @@ export default function ProjectDetail() {
         setCommentsLoading(true);
         setCommentsError("");
 
-        const [projectResult, userResult, commentsResult, usersResult] =
+        const [projectResult, userResult, commentsResult] =
           await Promise.allSettled([
             getProject(projectId),
             getCurrentUser(),
             listProjectComments(projectId),
-            listUsers({ page: 1, limit: 200 }),
           ]);
 
         if (projectResult.status === "fulfilled") {
@@ -68,21 +63,6 @@ export default function ProjectDetail() {
         } else {
           setComments([]);
           setCommentsError("Unable to load comments.");
-        }
-
-        {
-          const map: Record<number, string> = {};
-          if (usersResult.status === "fulfilled") {
-            for (const user of usersResult.value) {
-              map[user.id] = user.name;
-            }
-          }
-
-          if (userResult.status === "fulfilled" && userResult.value) {
-            map[userResult.value.id] = userResult.value.name;
-          }
-
-          setUserNamesById(map);
         }
       } catch (error) {
         console.error("Erreur chargement projet:", error);
@@ -309,7 +289,7 @@ export default function ProjectDetail() {
                 >
                   <div className="flex items-baseline justify-between gap-3">
                     <div className="text-xs font-semibold text-slate-700">
-                      {userNamesById[comment.author_id] ?? "Unknown user"}
+                      {comment.author.name}
                     </div>
                     <div className="text-xs text-slate-500">
                       {comment.created_at

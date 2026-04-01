@@ -22,8 +22,11 @@ export type Comment = {
   id: number;
   content: string;
   created_at: string;
-  author_id: number;
   project_id: number;
+  author: {
+    id: number;
+    name: string;
+  };
 };
 
 export type ProjectQuery = {
