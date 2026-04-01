@@ -55,7 +55,7 @@ export default function ProjectCard({
         </div>
       </div>
 
-      <div className="aspect-[16/9] w-full bg-slate-100">
+      <div className="aspect-video w-full bg-slate-100">
         <img
           src={project.image_url}
           alt={project.title}
