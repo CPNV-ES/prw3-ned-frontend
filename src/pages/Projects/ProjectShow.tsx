@@ -154,7 +154,7 @@ export default function ProjectDetail() {
     return <div className="app-container">Project not found</div>;
   }
 
-  const isAuthor = currentUser?.id === project.author_id;
+  const isAuthor = currentUser?.id === project.author.id;
 
   return (
     <div className="app-container">
@@ -176,13 +176,11 @@ export default function ProjectDetail() {
                 <button
                   type="button"
                   onClick={() => {
-                    navigate(`/users/${project.author_id}`);
+                    navigate(`/users/${project.author.id}`);
                   }}
                   className="font-semibold text-white/90 underline decoration-white/40 underline-offset-2 transition hover:text-white hover:decoration-white/70"
                 >
-                  {project.author_name
-                    ? project.author_name
-                    : `author #${project.author_id}`}
+                  {project.author.name}
                 </button>
                 {project.created_at
                   ? ` | ${new Date(project.created_at).toLocaleDateString()}`

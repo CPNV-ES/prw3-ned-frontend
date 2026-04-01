@@ -122,7 +122,7 @@ export default function UserShow() {
       return;
     }
 
-    if (currentUser.id !== project.author_id) {
+    if (currentUser.id !== project.author.id) {
       setActionError("You cannot delete a project you do not own.");
       return;
     }

@@ -11,8 +11,10 @@ export type Project = {
   image_url: string;
   likes: number;
   created_at: string;
-  author_id: number;
-  author_name?: string;
+  author: {
+    id: number;
+    name: string;
+  };
   tags: string[];
 };
 
